@@ -1,0 +1,6 @@
+[03-Oct-2018 08:55:45 Europe/London] PHP Fatal error:  session_start(): Failed to initialize storage module: user (path: sessions) in /home/wavesuite/public_html/demopos/system/libraries/Session/Session.php on line 143
+[03-Oct-2018 08:55:54 Europe/London] PHP Fatal error:  session_start(): Failed to initialize storage module: user (path: sessions) in /home/wavesuite/public_html/demopos/system/libraries/Session/Session.php on line 143
+[03-Oct-2018 08:56:07 Europe/London] PHP Fatal error:  session_start(): Failed to initialize storage module: user (path: sessions) in /home/wavesuite/public_html/demopos/system/libraries/Session/Session.php on line 143
+[03-Oct-2018 08:56:09 Europe/London] PHP Fatal error:  session_start(): Failed to initialize storage module: user (path: sessions) in /home/wavesuite/public_html/demopos/system/libraries/Session/Session.php on line 143
+[03-Oct-2018 08:56:41 Europe/London] PHP Fatal error:  session_start(): Failed to initialize storage module: user (path: sessions) in /home/wavesuite/public_html/demopos/system/libraries/Session/Session.php on line 143
+[03-Oct-2018 08:56:44 Europe/London] PHP Fatal error:  session_start(): Failed to initialize storage module: user (path: sessions) in /home/wavesuite/public_html/demopos/system/libraries/Session/Session.php on line 143
