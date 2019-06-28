@@ -266,6 +266,14 @@
                                     </a>
                                 </li>
                                 <?php } ?>
+                                <?php if ($Settings->dueDateAlert) { ?>
+                                <li>
+                                    <a href="<?= admin_url('alerts/due_alerts') ?>" class="">
+                                        <span class="label label-danger pull-right" style="margin-top:3px;"><?= $due_date_alert_num; ?></span>
+                                        <span style="padding-right: 35px;"><?= lang('Due_Date_Alerts') ?> </span>
+                                    </a>
+                                </li>
+                                <?php } ?>
                             </ul>
                         </li>
                     <?php } ?>

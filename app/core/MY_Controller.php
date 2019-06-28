@@ -6,6 +6,8 @@ class MY_Controller extends CI_Controller {
     {
         parent::__construct();
         $this->Settings = $this->site->get_setting();
+        $this->load->admin_model('Alerts_model', 'alerts');
+        $this->Settings->dueDateAlert = $this->alerts->dueDateAlert();
         if($sma_language = $this->input->cookie('sma_language', TRUE)) {
             $this->config->set_item('language', $sma_language);
             $this->lang->admin_load('sma', $sma_language);
@@ -117,6 +119,7 @@ class MY_Controller extends CI_Controller {
         $meta['exp_alert_num'] = $this->site->get_expiring_qty_alerts();
         $meta['shop_sale_alerts'] = SHOP ? $this->site->get_shop_sale_alerts() : 0;
         $meta['shop_payment_alerts'] = SHOP ? $this->site->get_shop_payment_alerts() : 0;
+        $meta['due_date_alert_num'] = $this->alerts->get_due_date_qty_alerts();
         $this->load->view($this->theme . 'header', $meta);
         $this->load->view($this->theme . $page, $data);
         $this->load->view($this->theme . 'footer');
