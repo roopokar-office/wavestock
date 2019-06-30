@@ -357,8 +357,10 @@ class Purchases extends MY_Controller
             $reference = $this->input->post('reference_no') ? $this->input->post('reference_no') : $this->site->getReference('po');
             if ($this->Owner || $this->Admin) {
                 $date = $this->sma->fld(trim($this->input->post('date')));
+                $due_date = $this->sma->fld(trim($this->input->post('ddate')));
             } else {
                 $date = date('Y-m-d H:i:s');
+                $due_date = date('Y-m-d H:i:s');
             }
             $warehouse_id = $this->input->post('warehouse');
             $supplier_id = $this->input->post('supplier');
@@ -368,7 +370,7 @@ class Purchases extends MY_Controller
             $supplier = $supplier_details->company != '-'  ? $supplier_details->company : $supplier_details->name;
             $note = $this->sma->clear_tags($this->input->post('note'));
             $payment_term = $this->input->post('payment_term');
-            $due_date = $payment_term ? date('Y-m-d', strtotime('+' . $payment_term . ' days', strtotime($date))) : null;
+            // $due_date = $payment_term ? date('Y-m-d', strtotime('+' . $payment_term . ' days', strtotime($due_date))) : null;
 
             $total = 0;
             $product_tax = 0;
@@ -493,6 +495,7 @@ class Purchases extends MY_Controller
                 'payment_term' => $payment_term,
                 'due_date' => $due_date,
             );
+            
             if ($this->Settings->indian_gst) {
                 $data['cgst'] = $total_cgst;
                 $data['sgst'] = $total_sgst;
@@ -644,8 +647,10 @@ class Purchases extends MY_Controller
             $reference = $this->input->post('reference_no');
             if ($this->Owner || $this->Admin) {
                 $date = $this->sma->fld(trim($this->input->post('date')));
+                $due_date = $this->sma->fld(trim($this->input->post('ddate')));
             } else {
                 $date = $inv->date;
+                $due_date = date('Y-m-d H:i:s');
             }
             $warehouse_id = $this->input->post('warehouse');
             $supplier_id = $this->input->post('supplier');
@@ -655,7 +660,7 @@ class Purchases extends MY_Controller
             $supplier = $supplier_details->company != '-'  ? $supplier_details->company : $supplier_details->name;
             $note = $this->sma->clear_tags($this->input->post('note'));
             $payment_term = $this->input->post('payment_term');
-            $due_date = $payment_term ? date('Y-m-d', strtotime('+' . $payment_term . ' days', strtotime($date))) : null;
+            // $due_date = $payment_term ? date('Y-m-d', strtotime('+' . $payment_term . ' days', strtotime($date))) : null;
 
             $total = 0;
             $product_tax = 0;

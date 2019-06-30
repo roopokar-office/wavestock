@@ -20,6 +20,7 @@
         });
         <?php if ($inv) { ?>
         localStorage.setItem('podate', '<?= date($dateFormats['php_ldate'], strtotime($inv->date))?>');
+        localStorage.setItem('poddate', '<?= date($dateFormats['php_ldate'], strtotime($inv->due_date))?>');
         localStorage.setItem('posupplier', '<?=$inv->supplier_id?>');
         localStorage.setItem('poref', '<?=$inv->reference_no?>');
         localStorage.setItem('powarehouse', '<?=$inv->warehouse_id?>');
@@ -230,6 +231,19 @@
                                        data-show-preview="false" class="form-control file">
                             </div>
                         </div>
+
+                        <?php if ($Owner || $Admin) { ?>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <?= lang("Due_Date", "poddate"); ?>
+                                    <?php echo form_input('ddate', (isset($_POST['ddate']) ? $_POST['ddate'] : ""), 'class="form-control input-tip datetime" id="poddate" required="required"'); ?>
+                                </div>
+                            </div>
+                        <?php } ?>
+
+                        <script>
+                            document.getElementById('poddate').value = (localStorage.getItem('poddate'));
+                        </script>
 
                         <div class="col-md-12">
                             <div class="panel panel-warning">
