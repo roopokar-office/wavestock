@@ -46,7 +46,7 @@
                 }
                 $.ajax({
                     type: 'get',
-                    url: '<?= admin_url('quotes/suggestions'); ?>',
+                    url: '<?= admin_url('webquotes/suggestions'); ?>',
                     dataType: "json",
                     data: {
                         term: request.term,
@@ -117,7 +117,7 @@
 
 <div class="box">
     <div class="box-header">
-        <h2 class="blue"><i class="fa-fw fa fa-edit"></i><?= lang('edit_quote'); ?></h2>
+        <h2 class="blue"><i class="fa-fw fa fa-edit"></i><?= lang('Edit_Web_Quotation'); ?></h2>
     </div>
     <div class="box-content">
         <div class="row">
@@ -126,7 +126,7 @@
                 <p class="introtext"><?php echo lang('enter_info'); ?></p>
                 <?php
                 $attrib = array('data-toggle' => 'validator', 'role' => 'form', 'class' => 'edit-qu-form');
-                echo admin_form_open_multipart("quotes/edit/" . $id, $attrib)
+                echo admin_form_open_multipart("webquotes/edit/" . $id, $attrib)
                 ?>
 
                 <div class="row">

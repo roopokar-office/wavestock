@@ -38,8 +38,8 @@ class WebQuotes extends MY_Controller {
             $this->data['warehouse'] = $this->session->userdata('warehouse_id') ? $this->site->getWarehouseByID($this->session->userdata('warehouse_id')) : null;
         }
 
-        $bc = array(array('link' => base_url(), 'page' => lang('home')), array('link' => '#', 'page' => lang('Web Quotes')));
-        $meta = array('page_title' => lang('Web Quotes'), 'bc' => $bc);
+        $bc = array(array('link' => base_url(), 'page' => lang('home')), array('link' => '#', 'page' => lang('Web_Quotations')));
+        $meta = array('page_title' => lang('Web_Quotations'), 'bc' => $bc);
         $this->page_construct('webquotes/index', $meta, $this->data);
 
     }
@@ -58,7 +58,7 @@ class WebQuotes extends MY_Controller {
         $pc_link = anchor('admin/purchases/add/$1', '<i class="fa fa-star"></i> ' . lang('create_purchase'));
         $pdf_link = anchor('admin/webquotes/pdf/$1', '<i class="fa fa-file-pdf-o"></i> ' . lang('download_pdf'));
         $delete_link = "<a href='#' class='po' title='<b>" . $this->lang->line("delete_quote") . "</b>' data-content=\"<p>"
-            . lang('r_u_sure') . "</p><a class='btn btn-danger po-delete' href='" . admin_url('web_quotes/delete/$1') . "'>"
+            . lang('r_u_sure') . "</p><a class='btn btn-danger po-delete' href='" . admin_url('webquotes/delete/$1') . "'>"
             . lang('i_m_sure') . "</a> <button class='btn po-close'>" . lang('no') . "</button>\"  rel='popover'><i class=\"fa fa-trash-o\"></i> "
             . lang('delete_quote') . "</a>";
         $action = '<div class="text-center"><div class="btn-group text-left">'
@@ -129,7 +129,7 @@ class WebQuotes extends MY_Controller {
         $this->data['warehouse'] = $this->site->getWarehouseByID($inv->warehouse_id);
         $this->data['inv'] = $inv;
 
-        $this->load->view($this->theme . 'quotes/modal_view', $this->data);
+        $this->load->view($this->theme . 'webquotes/modal_view', $this->data);
 
     }
 
@@ -683,7 +683,7 @@ class WebQuotes extends MY_Controller {
         if ($this->form_validation->run() == true && $this->quotes_model->updateQuote($id, $data, $products)) {
             $this->session->set_userdata('remove_quls', 1);
             $this->session->set_flashdata('message', $this->lang->line("quote_added"));
-            admin_redirect('quotes');
+            admin_redirect('webquotes');
         } else {
 
             $this->data['error'] = (validation_errors() ? validation_errors() : $this->session->flashdata('error'));
@@ -760,9 +760,9 @@ class WebQuotes extends MY_Controller {
             $this->data['tax_rates'] = $this->site->getAllTaxRates();
             $this->data['warehouses'] = ($this->Owner || $this->Admin || !$this->session->userdata('warehouse_id')) ? $this->site->getAllWarehouses() : null;
 
-            $bc = array(array('link' => base_url(), 'page' => lang('home')), array('link' => admin_url('quotes'), 'page' => lang('quotes')), array('link' => '#', 'page' => lang('edit_quote')));
-            $meta = array('page_title' => lang('edit_quote'), 'bc' => $bc);
-            $this->page_construct('quotes/edit', $meta, $this->data);
+            $bc = array(array('link' => base_url(), 'page' => lang('home')), array('link' => admin_url('webquotes'), 'page' => lang('quotes')), array('link' => '#', 'page' => lang('Edit_Web_Quotation')));
+            $meta = array('page_title' => lang('Edit_Web_Quotation'), 'bc' => $bc);
+            $this->page_construct('webquotes/edit', $meta, $this->data);
         }
     }
 
