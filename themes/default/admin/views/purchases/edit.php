@@ -20,7 +20,7 @@
         });
         <?php if ($inv) { ?>
         localStorage.setItem('podate', '<?= date($dateFormats['php_ldate'], strtotime($inv->date))?>');
-        localStorage.setItem('poddate', '<?= date($dateFormats['php_ldate'], strtotime($inv->due_date))?>');
+        localStorage.setItem('poddate', '<?= ($inv->due_date != 0) ? date($dateFormats['php_ldate'], strtotime($inv->due_date)) : '' ?>');
         localStorage.setItem('posupplier', '<?=$inv->supplier_id?>');
         localStorage.setItem('poref', '<?=$inv->reference_no?>');
         localStorage.setItem('powarehouse', '<?=$inv->warehouse_id?>');
@@ -42,6 +42,12 @@
         });
         if (podate = localStorage.getItem('podate')) {
             $('#podate').val(podate);
+        }
+        $(document).on('change', '#poddate', function (e) {
+            localStorage.setItem('poddate', $(this).val());
+        });
+        if (poddate = localStorage.getItem('poddate')) {
+            $('#poddate').val(poddate);
         }
         <?php } ?>
         ItemnTotals();
@@ -236,14 +242,10 @@
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <?= lang("Due_Date", "poddate"); ?>
-                                    <?php echo form_input('ddate', (isset($_POST['ddate']) ? $_POST['ddate'] : ""), 'class="form-control input-tip datetime" id="poddate" required="required"'); ?>
+                                    <?php echo form_input('ddate', (isset($_POST['ddate']) ? $_POST['ddate'] : ""), 'class="form-control input-tip datetime" id="poddate"'); ?>
                                 </div>
                             </div>
                         <?php } ?>
-
-                        <script>
-                            document.getElementById('poddate').value = (localStorage.getItem('poddate'));
-                        </script>
 
                         <div class="col-md-12">
                             <div class="panel panel-warning">
