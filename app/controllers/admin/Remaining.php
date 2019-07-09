@@ -48,14 +48,34 @@ class Remaining extends MY_Controller {
         $reference_no = $this->input->get('reference_no') ? $this->input->get('reference_no') : NULL;
         $start_date = $this->input->get('start_date') ? $this->input->get('start_date') : NULL;
         $end_date = $this->input->get('end_date') ? $this->input->get('end_date') : NULL;
+        if ($end_date) {
+            $end_date = $this->sma->fld($end_date);
+//            $end_date = str_replace('/', '-', $end_date );
+//            $end_date = date('Y-m-d', strtotime($end_date));
+        }
 
         if ($start_date) {
             $start_date = $this->sma->fld($start_date);
-            $end_date = $this->sma->fld($end_date);
         }
         if (!$this->Owner && !$this->Admin && !$this->session->userdata('view_right')) {
             $user = $this->session->userdata('user_id');
         }
+
+        $product_purchase = "( SELECT product_id, product_name, quantity, SUM(quantity) AS total_purchase_qty, SUM(real_unit_cost*quantity) AS total_cost FROM {$this->db->dbprefix('purchase_items')} pi
+            LEFT JOIN {$this->db->dbprefix('purchases')} p on p.id = pi.purchase_id
+            WHERE p.status != 'pending' AND p.status != 'ordered' AND transfer_id IS NULL ";
+        $product_sale = "( SELECT product_id, product_name, SUM(quantity) AS total_sale_qty, `date` 
+             FROM {$this->db->dbprefix('sales')} s JOIN {$this->db->dbprefix('sale_items')} si 
+             ON s.id = si.sale_id ";
+        if ($end_date) {
+            $product_sale .= " WHERE ";
+            $end_date = $end_date ? $end_date : date('Y-m-d');
+            $product_purchase .= " AND p.date <= '{$end_date}' ";
+            $product_sale .= " s.date <= '{$end_date}' ";
+        }
+
+        $product_purchase .= " GROUP BY pi.product_id ) PPurchase";
+        $product_sale .= " GROUP BY si.product_id ) PSales";
 
         if ($pdf || $xls) {
 
@@ -161,27 +181,24 @@ class Remaining extends MY_Controller {
 
         } else {
 
-            $subQuery1 = $this->db
-                ->select('sale_items.product_id, product_name, SUM(quantity) AS total_sale_qty, sales.date')
-                ->from('sale_items')
-                ->join('sales', 'sale_items.sale_id = sales.id')
-                ->where('sales.date <=', '2019-07-07')
-                ->group_by('product_id')
-                ->get_compiled_select();
-
             $this->load->library('datatables');
             $this->datatables
-                ->select("sma_purchase.product_id, sma_purchase.product_name,
-                (SUM(real_unit_cost*quantity)/SUM(sma_purchase.quantity)) AS avg_cost,
-                SUM(sma_purchase.quantity) AS total_purchase_qty,
-                total_sale_qty,
-                (IFNULL(SUM(sma_purchase.quantity), 0)-IFNULL(total_sale_qty, 0)) AS remaining_qty")
-                ->from('purchase_items as sma_purchase')
-                ->where('purchase.date <=', '2019-07-07')
-                ->where('transfer_id', NULL, TRUE)
-                ->group_by('sma_purchase.product_id')
-                ->join("($subQuery1) as sale", 'purchase.product_id = sale.product_id', 'left');
-            
+                ->select("{$this->db->dbprefix('products')}.id, {$this->db->dbprefix('products')}.name,
+                (SUM(total_cost)/SUM(PPurchase.quantity)) AS avg_cost,
+                COALESCE(SUM(PPurchase.quantity), 0) AS total_purchase_qty,
+                IFNULL(total_sale_qty, 0) AS total_sale_qty,
+                (IFNULL(SUM(PPurchase.quantity), 0)-IFNULL(total_sale_qty, 0)) AS remaining_qty", FALSE)
+                ->from('products');
+
+            $this->datatables
+                ->join($product_sale, 'products.id = PSales.product_id', 'left')
+                ->join($product_purchase, 'products.id = PPurchase.product_id', 'left')
+                ->group_by('products.code');
+
+            if ($product) {
+                $this->datatables->where($this->db->dbprefix('products') . ".id", $product);
+            }
+
             echo $this->datatables->generate();
 
         }
