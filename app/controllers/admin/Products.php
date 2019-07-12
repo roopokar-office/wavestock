@@ -2104,34 +2104,38 @@ class Products extends MY_Controller
 
                 } elseif ($this->input->post('form_action') == 'export_excel') {
 
+                    $char = chr(833); // chr(833) is A
+
                     $this->load->library('excel');
                     $this->excel->setActiveSheetIndex(0);
                     $this->excel->getActiveSheet()->setTitle('Products');
-                    $this->excel->getActiveSheet()->SetCellValue('A1', lang('name'));
-                    $this->excel->getActiveSheet()->SetCellValue('B1', lang('code'));
-                    $this->excel->getActiveSheet()->SetCellValue('C1', lang('barcode_symbology'));
-                    $this->excel->getActiveSheet()->SetCellValue('D1', lang('brand'));
-                    $this->excel->getActiveSheet()->SetCellValue('E1', lang('category_code'));
-                    $this->excel->getActiveSheet()->SetCellValue('F1', lang('unit_code'));
-                    $this->excel->getActiveSheet()->SetCellValue('G1', lang('sale').' '.lang('unit_code'));
-                    $this->excel->getActiveSheet()->SetCellValue('H1', lang('purchase').' '.lang('unit_code'));
-                    $this->excel->getActiveSheet()->SetCellValue('I1', lang('cost'));
-                    $this->excel->getActiveSheet()->SetCellValue('J1', lang('price'));
-                    $this->excel->getActiveSheet()->SetCellValue('K1', lang('alert_quantity'));
-                    $this->excel->getActiveSheet()->SetCellValue('L1', lang('tax_rate'));
-                    $this->excel->getActiveSheet()->SetCellValue('M1', lang('tax_method'));
-                    $this->excel->getActiveSheet()->SetCellValue('N1', lang('image'));
-                    $this->excel->getActiveSheet()->SetCellValue('O1', lang('subcategory_code'));
-                    $this->excel->getActiveSheet()->SetCellValue('P1', lang('product_variants'));
-                    $this->excel->getActiveSheet()->SetCellValue('Q1', lang('pcf1'));
-                    $this->excel->getActiveSheet()->SetCellValue('R1', lang('pcf2'));
-                    $this->excel->getActiveSheet()->SetCellValue('S1', lang('pcf3'));
-                    $this->excel->getActiveSheet()->SetCellValue('T1', lang('pcf4'));
-                    $this->excel->getActiveSheet()->SetCellValue('U1', lang('pcf5'));
-                    $this->excel->getActiveSheet()->SetCellValue('V1', lang('pcf6'));
-                    $this->excel->getActiveSheet()->SetCellValue('W1', lang('quantity'));
+                    $this->excel->getActiveSheet()->SetCellValue($char++.'1', lang('SL.'));
+                    $this->excel->getActiveSheet()->SetCellValue($char++.'1', lang('name'));
+                    $this->excel->getActiveSheet()->SetCellValue($char++.'1', lang('code'));
+                    $this->excel->getActiveSheet()->SetCellValue($char++.'1', lang('barcode_symbology'));
+                    $this->excel->getActiveSheet()->SetCellValue($char++.'1', lang('brand'));
+                    $this->excel->getActiveSheet()->SetCellValue($char++.'1', lang('category_code'));
+                    $this->excel->getActiveSheet()->SetCellValue($char++.'1', lang('unit_code'));
+                    $this->excel->getActiveSheet()->SetCellValue($char++.'1', lang('sale').' '.lang('unit_code'));
+                    $this->excel->getActiveSheet()->SetCellValue($char++.'1', lang('purchase').' '.lang('unit_code'));
+                    $this->excel->getActiveSheet()->SetCellValue($char++.'1', lang('cost'));
+                    $this->excel->getActiveSheet()->SetCellValue($char++.'1', lang('price'));
+                    $this->excel->getActiveSheet()->SetCellValue($char++.'1', lang('alert_quantity'));
+                    $this->excel->getActiveSheet()->SetCellValue($char++.'1', lang('tax_rate'));
+                    $this->excel->getActiveSheet()->SetCellValue($char++.'1', lang('tax_method'));
+                    $this->excel->getActiveSheet()->SetCellValue($char++.'1', lang('image'));
+                    $this->excel->getActiveSheet()->SetCellValue($char++.'1', lang('subcategory_code'));
+                    $this->excel->getActiveSheet()->SetCellValue($char++.'1', lang('product_variants'));
+                    $this->excel->getActiveSheet()->SetCellValue($char++.'1', lang('pcf1'));
+                    $this->excel->getActiveSheet()->SetCellValue($char++.'1', lang('pcf2'));
+                    $this->excel->getActiveSheet()->SetCellValue($char++.'1', lang('pcf3'));
+                    $this->excel->getActiveSheet()->SetCellValue($char++.'1', lang('pcf4'));
+                    $this->excel->getActiveSheet()->SetCellValue($char++.'1', lang('pcf5'));
+                    $this->excel->getActiveSheet()->SetCellValue($char++.'1', lang('pcf6'));
+                    $this->excel->getActiveSheet()->SetCellValue($char++.'1', lang('quantity'));
 
                     $row = 2;
+                    $row_number = 1;
                     foreach ($_POST['val'] as $id) {
                         $product = $this->products_model->getProductDetail($id);
                         $brand = $this->site->getBrandByID($product->brand);
@@ -2164,43 +2168,47 @@ class Products extends MY_Controller
                                 $quantity = 0;
                             }
                         }
-                        $this->excel->getActiveSheet()->SetCellValue('A' . $row, $product->name);
-                        $this->excel->getActiveSheet()->SetCellValue('B' . $row, $product->code);
-                        $this->excel->getActiveSheet()->SetCellValue('C' . $row, $product->barcode_symbology);
-                        $this->excel->getActiveSheet()->SetCellValue('D' . $row, ($brand ? $brand->name : ''));
-                        $this->excel->getActiveSheet()->SetCellValue('E' . $row, $product->category_code);
-                        $this->excel->getActiveSheet()->SetCellValue('F' . $row, $base_unit);
-                        $this->excel->getActiveSheet()->SetCellValue('G' . $row, $sale_unit);
-                        $this->excel->getActiveSheet()->SetCellValue('H' . $row, $purchase_unit);
+
+                        $char = chr(833); // chr(833) is A
+
+                        $this->excel->getActiveSheet()->SetCellValue($char++ . $row, $row_number++);
+                        $this->excel->getActiveSheet()->SetCellValue($char++ . $row, $product->name);
+                        $this->excel->getActiveSheet()->SetCellValue($char++ . $row, $product->code);
+                        $this->excel->getActiveSheet()->SetCellValue($char++ . $row, $product->barcode_symbology);
+                        $this->excel->getActiveSheet()->SetCellValue($char++ . $row, ($brand ? $brand->name : ''));
+                        $this->excel->getActiveSheet()->SetCellValue($char++ . $row, $product->category_code);
+                        $this->excel->getActiveSheet()->SetCellValue($char++ . $row, $base_unit);
+                        $this->excel->getActiveSheet()->SetCellValue($char++ . $row, $sale_unit);
+                        $this->excel->getActiveSheet()->SetCellValue($char++ . $row, $purchase_unit);
                         if ($this->Owner || $this->Admin || $this->session->userdata('show_cost')) {
-                            $this->excel->getActiveSheet()->SetCellValue('I' . $row, $product->cost);
+                            $this->excel->getActiveSheet()->SetCellValue($char++ . $row, $product->cost);
                         }
                         if ($this->Owner || $this->Admin || $this->session->userdata('show_price')) {
-                            $this->excel->getActiveSheet()->SetCellValue('J' . $row, $product->price);
+                            $this->excel->getActiveSheet()->SetCellValue($char++ . $row, $product->price);
                         }
-                        $this->excel->getActiveSheet()->SetCellValue('K' . $row, $product->alert_quantity);
-                        $this->excel->getActiveSheet()->SetCellValue('L' . $row, $product->tax_rate_name);
-                        $this->excel->getActiveSheet()->SetCellValue('M' . $row, $product->tax_method ? lang('exclusive') : lang('inclusive'));
-                        $this->excel->getActiveSheet()->SetCellValue('N' . $row, $product->image);
-                        $this->excel->getActiveSheet()->SetCellValue('O' . $row, $product->subcategory_code);
-                        $this->excel->getActiveSheet()->SetCellValue('P' . $row, $product_variants);
-                        $this->excel->getActiveSheet()->SetCellValue('Q' . $row, $product->cf1);
-                        $this->excel->getActiveSheet()->SetCellValue('R' . $row, $product->cf2);
-                        $this->excel->getActiveSheet()->SetCellValue('S' . $row, $product->cf3);
-                        $this->excel->getActiveSheet()->SetCellValue('T' . $row, $product->cf4);
-                        $this->excel->getActiveSheet()->SetCellValue('U' . $row, $product->cf5);
-                        $this->excel->getActiveSheet()->SetCellValue('V' . $row, $product->cf6);
-                        $this->excel->getActiveSheet()->SetCellValue('W' . $row, $quantity);
+                        $this->excel->getActiveSheet()->SetCellValue($char++ . $row, $product->alert_quantity);
+                        $this->excel->getActiveSheet()->SetCellValue($char++ . $row, $product->tax_rate_name);
+                        $this->excel->getActiveSheet()->SetCellValue($char++ . $row, $product->tax_method ? lang('exclusive') : lang('inclusive'));
+                        $this->excel->getActiveSheet()->SetCellValue($char++ . $row, $product->image);
+                        $this->excel->getActiveSheet()->SetCellValue($char++ . $row, $product->subcategory_code);
+                        $this->excel->getActiveSheet()->SetCellValue($char++ . $row, $product_variants);
+                        $this->excel->getActiveSheet()->SetCellValue($char++ . $row, $product->cf1);
+                        $this->excel->getActiveSheet()->SetCellValue($char++ . $row, $product->cf2);
+                        $this->excel->getActiveSheet()->SetCellValue($char++ . $row, $product->cf3);
+                        $this->excel->getActiveSheet()->SetCellValue($char++ . $row, $product->cf4);
+                        $this->excel->getActiveSheet()->SetCellValue($char++ . $row, $product->cf5);
+                        $this->excel->getActiveSheet()->SetCellValue($char++ . $row, $product->cf6);
+                        $this->excel->getActiveSheet()->SetCellValue($char++ . $row, $quantity);
                         $row++;
                     }
 
-                    $this->excel->getActiveSheet()->getColumnDimension('A')->setWidth(30);
-                    $this->excel->getActiveSheet()->getColumnDimension('B')->setWidth(20);
-                    $this->excel->getActiveSheet()->getColumnDimension('D')->setWidth(15);
-                    $this->excel->getActiveSheet()->getColumnDimension('E')->setWidth(20);
-                    $this->excel->getActiveSheet()->getColumnDimension('N')->setWidth(40);
-                    $this->excel->getActiveSheet()->getColumnDimension('O')->setWidth(30);
+                    $this->excel->getActiveSheet()->getColumnDimension('B')->setWidth(30);
+                    $this->excel->getActiveSheet()->getColumnDimension('C')->setWidth(20);
+                    $this->excel->getActiveSheet()->getColumnDimension('E')->setWidth(15);
+                    $this->excel->getActiveSheet()->getColumnDimension('F')->setWidth(20);
+                    $this->excel->getActiveSheet()->getColumnDimension('O')->setWidth(40);
                     $this->excel->getActiveSheet()->getColumnDimension('P')->setWidth(30);
+                    $this->excel->getActiveSheet()->getColumnDimension('Q')->setWidth(30);
                     $this->excel->getDefaultStyle()->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
                     $filename = 'products_' . date('Y_m_d_H_i_s');
                     $this->load->helper('excel');
