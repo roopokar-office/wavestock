@@ -1372,33 +1372,37 @@ class Sales extends MY_Controller
                     $html = $this->combine_pdf($_POST['val']);
 
                 } elseif ($this->input->post('form_action') == 'export_excel') {
-
+                    $char = chr(833); // chr(833) is A
                     $this->load->library('excel');
                     $this->excel->setActiveSheetIndex(0);
                     $this->excel->getActiveSheet()->setTitle(lang('sales'));
-                    $this->excel->getActiveSheet()->SetCellValue('A1', lang('date'));
-                    $this->excel->getActiveSheet()->SetCellValue('B1', lang('reference_no'));
-                    $this->excel->getActiveSheet()->SetCellValue('C1', lang('biller'));
-                    $this->excel->getActiveSheet()->SetCellValue('D1', lang('customer'));
-                    $this->excel->getActiveSheet()->SetCellValue('E1', lang('grand_total'));
-                    $this->excel->getActiveSheet()->SetCellValue('F1', lang('paid'));
-                    $this->excel->getActiveSheet()->SetCellValue('G1', lang('payment_status'));
+                    $this->excel->getActiveSheet()->SetCellValue($char++.'1', lang('SL.'));
+                    $this->excel->getActiveSheet()->SetCellValue($char++.'1', lang('date'));
+                    $this->excel->getActiveSheet()->SetCellValue($char++.'1', lang('reference_no'));
+                    $this->excel->getActiveSheet()->SetCellValue($char++.'1', lang('biller'));
+                    $this->excel->getActiveSheet()->SetCellValue($char++.'1', lang('customer'));
+                    $this->excel->getActiveSheet()->SetCellValue($char++.'1', lang('grand_total'));
+                    $this->excel->getActiveSheet()->SetCellValue($char++.'1', lang('paid'));
+                    $this->excel->getActiveSheet()->SetCellValue($char++.'1', lang('payment_status'));
 
                     $row = 2;
+                    $row_number = 1;
                     foreach ($_POST['val'] as $id) {
+                        $char = chr(833); // chr(833) is A
                         $sale = $this->sales_model->getInvoiceByID($id);
-                        $this->excel->getActiveSheet()->SetCellValue('A' . $row, $this->sma->hrld($sale->date));
-                        $this->excel->getActiveSheet()->SetCellValue('B' . $row, $sale->reference_no);
-                        $this->excel->getActiveSheet()->SetCellValue('C' . $row, $sale->biller);
-                        $this->excel->getActiveSheet()->SetCellValue('D' . $row, $sale->customer);
-                        $this->excel->getActiveSheet()->SetCellValue('E' . $row, $sale->grand_total);
-                        $this->excel->getActiveSheet()->SetCellValue('F' . $row, lang($sale->paid));
-                        $this->excel->getActiveSheet()->SetCellValue('G' . $row, lang($sale->payment_status));
+                        $this->excel->getActiveSheet()->SetCellValue($char++ . $row, $row_number++);
+                        $this->excel->getActiveSheet()->SetCellValue($char++ . $row, $this->sma->hrld($sale->date));
+                        $this->excel->getActiveSheet()->SetCellValue($char++ . $row, $sale->reference_no);
+                        $this->excel->getActiveSheet()->SetCellValue($char++ . $row, $sale->biller);
+                        $this->excel->getActiveSheet()->SetCellValue($char++ . $row, $sale->customer);
+                        $this->excel->getActiveSheet()->SetCellValue($char++ . $row, $sale->grand_total);
+                        $this->excel->getActiveSheet()->SetCellValue($char++ . $row, lang($sale->paid));
+                        $this->excel->getActiveSheet()->SetCellValue($char++ . $row, lang($sale->payment_status));
                         $row++;
                     }
 
-                    $this->excel->getActiveSheet()->getColumnDimension('A')->setWidth(20);
                     $this->excel->getActiveSheet()->getColumnDimension('B')->setWidth(20);
+                    $this->excel->getActiveSheet()->getColumnDimension('C')->setWidth(20);
                     $this->excel->getDefaultStyle()->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
                     $filename = 'sales_' . date('Y_m_d_H_i_s');
                     $this->load->helper('excel');
