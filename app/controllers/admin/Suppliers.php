@@ -389,53 +389,59 @@ class Suppliers extends MY_Controller
 
                 if ($this->input->post('form_action') == 'export_excel') {
 
+                    $char = chr(833); // chr(833) is A
+
                     $this->load->library('excel');
                     $this->excel->setActiveSheetIndex(0);
                     $this->excel->getActiveSheet()->setTitle(lang('customer'));
-                    $this->excel->getActiveSheet()->SetCellValue('A1', lang('company'));
-                    $this->excel->getActiveSheet()->SetCellValue('B1', lang('name'));
-                    $this->excel->getActiveSheet()->SetCellValue('C1', lang('email'));
-                    $this->excel->getActiveSheet()->SetCellValue('D1', lang('phone'));
-                    $this->excel->getActiveSheet()->SetCellValue('E1', lang('address'));
-                    $this->excel->getActiveSheet()->SetCellValue('F1', lang('city'));
-                    $this->excel->getActiveSheet()->SetCellValue('G1', lang('state'));
-                    $this->excel->getActiveSheet()->SetCellValue('H1', lang('postal_code'));
-                    $this->excel->getActiveSheet()->SetCellValue('I1', lang('country'));
-                    $this->excel->getActiveSheet()->SetCellValue('J1', lang('vat_no'));
-                    $this->excel->getActiveSheet()->SetCellValue('K1', lang('gst_no'));
-                    $this->excel->getActiveSheet()->SetCellValue('L1', lang('scf1'));
-                    $this->excel->getActiveSheet()->SetCellValue('M1', lang('scf2'));
-                    $this->excel->getActiveSheet()->SetCellValue('N1', lang('scf3'));
-                    $this->excel->getActiveSheet()->SetCellValue('O1', lang('scf4'));
-                    $this->excel->getActiveSheet()->SetCellValue('P1', lang('scf5'));
-                    $this->excel->getActiveSheet()->SetCellValue('Q1', lang('scf6'));
+                    $this->excel->getActiveSheet()->SetCellValue($char++.'1', lang('SL.'));
+                    $this->excel->getActiveSheet()->SetCellValue($char++.'1', lang('company'));
+                    $this->excel->getActiveSheet()->SetCellValue($char++.'1', lang('name'));
+                    $this->excel->getActiveSheet()->SetCellValue($char++.'1', lang('email'));
+                    $this->excel->getActiveSheet()->SetCellValue($char++.'1', lang('phone'));
+                    $this->excel->getActiveSheet()->SetCellValue($char++.'1', lang('address'));
+                    $this->excel->getActiveSheet()->SetCellValue($char++.'1', lang('city'));
+                    $this->excel->getActiveSheet()->SetCellValue($char++.'1', lang('state'));
+                    $this->excel->getActiveSheet()->SetCellValue($char++.'1', lang('postal_code'));
+                    $this->excel->getActiveSheet()->SetCellValue($char++.'1', lang('country'));
+                    $this->excel->getActiveSheet()->SetCellValue($char++.'1', lang('vat_no'));
+                    $this->excel->getActiveSheet()->SetCellValue($char++.'1', lang('gst_no'));
+                    $this->excel->getActiveSheet()->SetCellValue($char++.'1', lang('scf1'));
+                    $this->excel->getActiveSheet()->SetCellValue($char++.'1', lang('scf2'));
+                    $this->excel->getActiveSheet()->SetCellValue($char++.'1', lang('scf3'));
+                    $this->excel->getActiveSheet()->SetCellValue($char++.'1', lang('scf4'));
+                    $this->excel->getActiveSheet()->SetCellValue($char++.'1', lang('scf5'));
+                    $this->excel->getActiveSheet()->SetCellValue($char++.'1', lang('scf6'));
 
                     $row = 2;
+                    $row_number = 1;
                     foreach ($_POST['val'] as $id) {
+                        $char = chr(833); // chr(833) is A
                         $customer = $this->site->getCompanyByID($id);
-                        $this->excel->getActiveSheet()->SetCellValue('A' . $row, $customer->company);
-                        $this->excel->getActiveSheet()->SetCellValue('B' . $row, $customer->name);
-                        $this->excel->getActiveSheet()->SetCellValue('C' . $row, $customer->email);
-                        $this->excel->getActiveSheet()->SetCellValue('D' . $row, $customer->phone);
-                        $this->excel->getActiveSheet()->SetCellValue('E' . $row, $customer->address);
-                        $this->excel->getActiveSheet()->SetCellValue('F' . $row, $customer->city);
-                        $this->excel->getActiveSheet()->SetCellValue('G' . $row, $customer->state);
-                        $this->excel->getActiveSheet()->SetCellValue('H' . $row, $customer->postal_code);
-                        $this->excel->getActiveSheet()->SetCellValue('I' . $row, $customer->country);
-                        $this->excel->getActiveSheet()->SetCellValue('J' . $row, $customer->vat_no);
-                        $this->excel->getActiveSheet()->SetCellValue('K' . $row, $customer->gst_no);
-                        $this->excel->getActiveSheet()->SetCellValue('L' . $row, $customer->cf1);
-                        $this->excel->getActiveSheet()->SetCellValue('M' . $row, $customer->cf2);
-                        $this->excel->getActiveSheet()->SetCellValue('N' . $row, $customer->cf3);
-                        $this->excel->getActiveSheet()->SetCellValue('O' . $row, $customer->cf4);
-                        $this->excel->getActiveSheet()->SetCellValue('P' . $row, $customer->cf5);
-                        $this->excel->getActiveSheet()->SetCellValue('Q' . $row, $customer->cf6);
+                        $this->excel->getActiveSheet()->SetCellValue($char++ . $row, $row_number++);
+                        $this->excel->getActiveSheet()->SetCellValue($char++ . $row, $customer->company);
+                        $this->excel->getActiveSheet()->SetCellValue($char++ . $row, $customer->name);
+                        $this->excel->getActiveSheet()->SetCellValue($char++ . $row, $customer->email);
+                        $this->excel->getActiveSheet()->SetCellValue($char++ . $row, $customer->phone);
+                        $this->excel->getActiveSheet()->SetCellValue($char++ . $row, $customer->address);
+                        $this->excel->getActiveSheet()->SetCellValue($char++ . $row, $customer->city);
+                        $this->excel->getActiveSheet()->SetCellValue($char++ . $row, $customer->state);
+                        $this->excel->getActiveSheet()->SetCellValue($char++ . $row, $customer->postal_code);
+                        $this->excel->getActiveSheet()->SetCellValue($char++ . $row, $customer->country);
+                        $this->excel->getActiveSheet()->SetCellValue($char++ . $row, $customer->vat_no);
+                        $this->excel->getActiveSheet()->SetCellValue($char++ . $row, $customer->gst_no);
+                        $this->excel->getActiveSheet()->SetCellValue($char++ . $row, $customer->cf1);
+                        $this->excel->getActiveSheet()->SetCellValue($char++ . $row, $customer->cf2);
+                        $this->excel->getActiveSheet()->SetCellValue($char++ . $row, $customer->cf3);
+                        $this->excel->getActiveSheet()->SetCellValue($char++ . $row, $customer->cf4);
+                        $this->excel->getActiveSheet()->SetCellValue($char++ . $row, $customer->cf5);
+                        $this->excel->getActiveSheet()->SetCellValue($char++ . $row, $customer->cf6);
                         $row++;
                     }
 
-                    $this->excel->getActiveSheet()->getColumnDimension('A')->setWidth(20);
                     $this->excel->getActiveSheet()->getColumnDimension('B')->setWidth(20);
                     $this->excel->getActiveSheet()->getColumnDimension('C')->setWidth(20);
+                    $this->excel->getActiveSheet()->getColumnDimension('D')->setWidth(20);
                     $this->excel->getDefaultStyle()->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
                     $filename = 'suppliers_' . date('Y_m_d_H_i_s');
                     $this->load->helper('excel');
