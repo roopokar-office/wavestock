@@ -689,6 +689,11 @@
                                                 <i class="fa fa-th-list"></i><span class="text"> <?= lang('Tags'); ?></span>
                                             </a>
                                         </li>
+                                        <li id="system_settings_kpi">
+                                            <a href="<?= admin_url('kpi') ?>">
+                                                <i class="fa fa-th-list"></i><span class="text"> <?= lang('KPI'); ?></span>
+                                            </a>
+                                        </li>
                                         <li id="system_settings_variants">
                                             <a href="<?= admin_url('system_settings/variants') ?>">
                                                 <i class="fa fa-tags"></i><span class="text"> <?= lang('variants'); ?></span>
