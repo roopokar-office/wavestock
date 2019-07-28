@@ -17,6 +17,7 @@ class Purchases extends MY_Controller
         $this->lang->admin_load('purchases', $this->Settings->user_language);
         $this->load->library('form_validation');
         $this->load->admin_model('purchases_model');
+        $this->load->admin_model('kpi_model');
         $this->digital_upload_path = 'files/';
         $this->upload_path = 'assets/uploads/';
         $this->thumbs_path = 'assets/uploads/thumbs/';
@@ -824,6 +825,20 @@ class Purchases extends MY_Controller
         }
 
         if ($this->form_validation->run() == true && $this->purchases_model->updatePurchase($id, $data, $products)) {
+            // Update KPI Terms by Anam
+            $all_kpi = $this->kpi_model->getAllKpi();
+            $kpi_data = array();
+            foreach ($all_kpi as $kpi) {
+                $data = array(
+                    'kpi_id' => $kpi->id,
+                    'purchase_id' => $id,
+                    'value' => $this->input->post("kpi-".$kpi->id),
+                );
+                array_push($kpi_data, (object)$data);
+            }
+            $this->kpi_model->updateKpiByPurchase($id, $kpi_data);
+            // END Of Update KPI Terms by Anam
+
             $this->session->set_userdata('remove_pols', 1);
             $this->session->set_flashdata('message', $this->lang->line("purchase_added"));
             admin_redirect('purchases');
@@ -875,6 +890,8 @@ class Purchases extends MY_Controller
             $this->data['categories'] = $this->site->getAllCategories();
             $this->data['tax_rates'] = $this->site->getAllTaxRates();
             $this->data['warehouses'] = $this->site->getAllWarehouses();
+            $this->data['all_kpi'] = $this->kpi_model->getAllKpi();
+            $this->data['all_kpi_values'] = $this->kpi_model->getKpiValue($id);
             $this->load->helper('string');
             $value = random_string('alnum', 20);
             $this->session->set_userdata('user_csrf', $value);
@@ -886,6 +903,20 @@ class Purchases extends MY_Controller
         }
     }
 
+    // This function is only Draft/Test Purpose No need to add to production
+    public function kpi_edit($id = null){
+        $all_kpi = $this->kpi_model->getAllKpi();
+        $kpi_data = array();
+        foreach ($all_kpi as $kpi) {
+            $data = array(
+                'kpi_id' => $kpi->id,
+                'purchase_id' => $id,
+                'value' => $this->input->post("kpi-".$kpi->id),
+            );
+            array_push($kpi_data, (object)$data);
+        }
+        $this->kpi_model->updateKpiByPurchase($id, $kpi_data);
+    }
     /* ----------------------------------------------------------------------------------------------------------- */
 
     public function purchase_by_csv()

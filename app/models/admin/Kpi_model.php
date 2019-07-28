@@ -30,6 +30,17 @@ class Kpi_model extends CI_Model
         return FALSE;
     }
 
+    public function getAllKpi() {
+        $q = $this->db->get('kpi');
+        if ($q->num_rows() > 0) {
+            foreach (($q->result()) as $row) {
+                $data[] = $row;
+            }
+            return $data;
+        }
+        return FALSE;
+    }
+
     public function deleteKpi($id) {
         if ($this->db->delete("kpi", array('id' => $id))) {
             return true;
@@ -46,9 +57,9 @@ class Kpi_model extends CI_Model
     }
 
     // Get the selected kpi by the product id
-    public function getSelectedTags($id) {
-        $query = $this->db->from('sma_kpi_products')
-                ->where(array('product_id' => $id))
+    public function getKpiValue($id) {
+        $query = $this->db->from('sma_kpi_purchases')
+                ->where(array('purchase_id' => $id))
                 ->get();
         if($query->num_rows() > 0){
             return $query->result();
@@ -75,16 +86,17 @@ class Kpi_model extends CI_Model
     }
 
     // Update kpi by product id
-    public function updateTagsByProduct($product_id, $tag_ids){
+    public function updateKpiByPurchase($purchase_id, $kpi_s){
         $response = false;
-        if ($this->db->delete("kpi_products", array('product_id' => $product_id))) {
+        if ($this->db->delete("kpi_purchases", array('purchase_id' => $purchase_id))) {
             $response = true;
-            foreach ($tag_ids as $tag_id){
+            foreach ($kpi_s as $kpi){
                 $data = array(
-                    'tag_id' => $tag_id,
-                    'product_id' => $product_id,
+                    'kpi_id' => $kpi->kpi_id,
+                    'purchase_id' => $kpi->purchase_id,
+                    'value' => $kpi->value,
                 );
-                if ($this->db->insert("kpi_products", $data)) {
+                if ($this->db->insert("kpi_purchases", $data)) {
                     $response = true;
                 } else {
                     $response = false;

@@ -368,6 +368,34 @@
                                 <?php echo form_textarea('note', (isset($_POST['note']) ? $_POST['note'] : ""), 'class="form-control" id="ponote" style="margin-top: 10px; height: 100px;"'); ?>
                             </div>
 
+                            <div class="clearfix"></div>
+                            <?= lang("KPI", "kpi"); ?>
+                            <div class="row">
+                                <?php
+                                foreach ($all_kpi as $kpi) {
+                                ?>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <?= $kpi->name; ?>
+                                        <?php
+                                        echo '<select name="kpi-'.$kpi->id.'">';
+                                        for ($i=0;$i<=5;$i++) {
+                                            $option  = "<option value='{$i}' ";
+                                            foreach ($all_kpi_values as $kpi_value){
+                                                if ($kpi_value->kpi_id == $kpi->id && $kpi_value->value == $i){
+                                                    $option .= "selected";
+                                                }
+                                            }
+                                            $option .= ">{$i}</option>";
+                                            echo $option;
+                                        }
+                                        echo '</select>';
+                                        ?>
+                                    </div>
+                                </div>
+                                <?php } ?>
+                            </div>
+
                         </div>
                         <div class="col-md-12">
                             <div
