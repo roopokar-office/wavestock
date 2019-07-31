@@ -183,13 +183,8 @@ class Kpi extends MY_Controller {
     }
 
     function delete_kpi($id = NULL) {
-
-//        if ($this->kpi_model->tagHasProducts($id)) {
-//            $this->sma->send_json(array('error' => 1, 'msg' => lang("tag_has_products")));
-//        }
-
-        if ($this->kpi_model->deleteTag($id)) {
-            $this->sma->send_json(array('error' => 0, 'msg' => lang("tag_deleted")));
+        if ($this->kpi_model->deleteKpi($id)) {
+            $this->sma->send_json(array('error' => 0, 'msg' => lang("KPI_Deleted")));
         }
     }
 
