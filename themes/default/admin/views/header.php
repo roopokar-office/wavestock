@@ -858,6 +858,11 @@
                                             <i class="fa fa-users"></i><span class="text"> <?= lang('suppliers_report'); ?></span>
                                         </a>
                                     </li>
+                                    <li id="reports_kpi_report">
+                                        <a href="<?= admin_url('kpireports') ?>">
+                                            <i class="fa fa-users"></i><span class="text"> <?= lang('KPI_Report'); ?></span>
+                                        </a>
+                                    </li>
                                     <li id="reports_staff_report">
                                         <a href="<?= admin_url('reports/users') ?>">
                                             <i class="fa fa-users"></i><span class="text"> <?= lang('staff_report'); ?></span>

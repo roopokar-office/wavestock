@@ -48,18 +48,54 @@ class Kpi_model extends CI_Model
         return FALSE;
     }
 
-    public function getKpiByID($id) {
-        $q = $this->db->get_where('kpi', array('id' => $id), 1);
+    public function getKpiValueByID($purchase_id, $kpi_id) {
+        $q = $this->db->get_where('kpi_purchases', array('kpi_id' => $kpi_id, 'purchase_id' => $purchase_id), 1);
         if ($q->num_rows() > 0) {
             return $q->row();
         }
         return FALSE;
     }
 
-    // Get the selected kpi by the product id
+    // Get the selected kpi by the purchase id
     public function getKpiValue($id) {
         $query = $this->db->from('sma_kpi_purchases')
                 ->where(array('purchase_id' => $id))
+                ->get();
+        if($query->num_rows() > 0){
+            return $query->result();
+        }else{
+            return false;
+        }
+    }
+
+    public function getKpiReport($data = NULL){
+        $this->db->select("purchases.id as tbl_purchase_id, supplier, reference_no, kpi.name, kpi_purchases.value, FORMAT((AVG(sma_kpi_purchases.value)), 2) as avg_kpi")
+                ->from("purchases")
+                ->join("kpi_purchases", "kpi_purchases.purchase_id = purchases.id", "left")
+                ->join("kpi", "kpi.id = kpi_purchases.kpi_id")
+                ->group_by("purchases.id");
+        if (isset($data['start_date'])){
+            $this->db->where("purchases.date >=", $data['start_date']);
+        }
+        if (isset($data['end_date'])){
+            $this->db->where("purchases.date <=", $data['end_date']);
+        }
+        if (isset($data['supplier_id'])){
+            $this->db->where("purchases.supplier_id =", $data['supplier_id']);
+        }
+        $query = $this->db->get();
+        if($query->num_rows() > 0){
+            return $query->result();
+        }else{
+            return false;
+        }
+    }
+
+    public function getAllSuppliers(){
+        $query = $this->db
+                ->select("supplier, supplier_id")
+                ->from("purchases")
+                ->group_by("supplier_id")
                 ->get();
         if($query->num_rows() > 0){
             return $query->result();
