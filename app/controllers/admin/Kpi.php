@@ -29,7 +29,7 @@ class Kpi extends MY_Controller {
     function index() {
         $this->data['error'] = validation_errors() ? validation_errors() : $this->session->flashdata('error');
         $bc = array(array('link' => base_url(), 'page' => lang('home')), array('link' => admin_url('system_settings'), 'page' => lang('system_settings')), array('link' => '#', 'page' => lang('KPI')));
-        $meta = array('page_title' => lang('Tags'), 'bc' => $bc);
+        $meta = array('page_title' => lang('KPI'), 'bc' => $bc);
         $this->page_construct('settings/kpi', $meta, $this->data);
     }
 

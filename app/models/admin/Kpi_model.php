@@ -41,6 +41,14 @@ class Kpi_model extends CI_Model
         return FALSE;
     }
 
+    public function getKpiByID($kpi_id) {
+        $q = $this->db->get_where('kpi', array('id' => $kpi_id), 1);
+        if ($q->num_rows() > 0) {
+            return $q->row();
+        }
+        return FALSE;
+    }
+
     public function deleteKpi($id) {
         if ($this->db->delete("kpi", array('id' => $id))) {
             return true;
