@@ -756,6 +756,11 @@
                                         </a>
                                     </li>
                                     <?php } ?>
+                                    <li id="reports_cogs">
+                                        <a href="<?= admin_url('cogs') ?>">
+                                            <i class="fa fa-bar-chart-o"></i><span class="text"> <?= lang('COGS_Reports'); ?></span>
+                                        </a>
+                                    </li>
                                     <li id="reports_quantity_alerts">
                                         <a href="<?= admin_url('reports/quantity_alerts') ?>">
                                             <i class="fa fa-bar-chart-o"></i><span class="text"> <?= lang('product_quantity_alerts'); ?></span>
