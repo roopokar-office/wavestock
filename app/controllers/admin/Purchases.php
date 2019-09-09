@@ -63,6 +63,7 @@ class Purchases extends MY_Controller
         $add_payment_link = anchor('admin/purchases/add_payment/$1', '<i class="fa fa-money"></i> ' . lang('add_payment'), 'data-toggle="modal" data-target="#myModal"');
         $email_link = anchor('admin/purchases/email/$1', '<i class="fa fa-envelope"></i> ' . lang('email_purchase'), 'data-toggle="modal" data-target="#myModal"');
         $edit_link = anchor('admin/purchases/edit/$1', '<i class="fa fa-edit"></i> ' . lang('edit_purchase'));
+        $challan_link = anchor('#', '<i class="fa fa-file-text-o"></i> ' . lang('Delivery_Challan'), array('id' => '$1', 'class' => 'challan_link'));
         $pdf_link = anchor('admin/purchases/pdf/$1', '<i class="fa fa-file-pdf-o"></i> ' . lang('download_pdf'));
         $print_barcode = anchor('admin/products/print_barcodes/?purchase=$1', '<i class="fa fa-print"></i> ' . lang('print_barcodes'));
         $return_link = anchor('admin/purchases/return_purchase/$1', '<i class="fa fa-angle-double-left"></i> ' . lang('return_purchase'));
@@ -147,6 +148,32 @@ class Purchases extends MY_Controller
         $this->data['return_rows'] = $inv->return_id ? $this->purchases_model->getAllPurchaseItems($inv->return_id) : NULL;
 
         $this->load->view($this->theme . 'purchases/modal_view', $this->data);
+
+    }
+
+    public function challan_modal_view($purchase_id = null)
+    {
+        $this->sma->checkPermissions('index', true);
+
+        if ($this->input->get('id')) {
+            $purchase_id = $this->input->get('id');
+        }
+        $this->data['error'] = (validation_errors()) ? validation_errors() : $this->session->flashdata('error');
+        $inv = $this->purchases_model->getPurchaseByID($purchase_id);
+        if (!$this->session->userdata('view_right')) {
+            $this->sma->view_rights($inv->created_by, true);
+        }
+        $this->data['rows'] = $this->purchases_model->getAllPurchaseItems($purchase_id);
+        $this->data['supplier'] = $this->site->getCompanyByID($inv->supplier_id);
+        $this->data['warehouse'] = $this->site->getWarehouseByID($inv->warehouse_id);
+        $this->data['inv'] = $inv;
+        $this->data['payments'] = $this->purchases_model->getPaymentsForPurchase($purchase_id);
+        $this->data['created_by'] = $this->site->getUser($inv->created_by);
+        $this->data['updated_by'] = $inv->updated_by ? $this->site->getUser($inv->updated_by) : null;
+        $this->data['return_purchase'] = $inv->return_id ? $this->purchases_model->getPurchaseByID($inv->return_id) : NULL;
+        $this->data['return_rows'] = $inv->return_id ? $this->purchases_model->getAllPurchaseItems($inv->return_id) : NULL;
+
+        $this->load->view($this->theme . 'purchases/challan_modal_view', $this->data);
 
     }
 
@@ -341,6 +368,76 @@ class Purchases extends MY_Controller
         }
     }
 
+    // This SMS function is only for test purpose
+    public function sms () {
+        $consignment_data = array(
+            'supplier_email' => "ferdous.anam@gmail.com",
+            'supplier_phone' => "+8801625501110",
+        );
+//        if ($this->consignment_sms($consignment_data)) {
+//            echo "A notification Email has been sent to the Supplier!";
+//        } else {
+//            echo "Email Sending Failed";
+//        }
+
+        $sms_result = $this->send_sms($consignment_data);
+        echo "<pre>";
+        print_r($sms_result);
+    }
+
+    public function send_sms($consignment_data){
+        $token = "79432c9e0afad786d880b96957985439";
+        $to = $consignment_data["supplier_phone"];
+        $message = "Thank You for The Product";
+
+        $url = "http://sms.greenweb.com.bd/api.php";
+
+        $data= array(
+            'to'=>"$to",
+            'message'=>"$message",
+            'token'=>"$token"
+        );
+
+//        Add parameters in key value
+        $ch = curl_init(); // Initialize cURL
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $smsresult = curl_exec($ch);
+
+        echo "<pre>";
+        print_r($data);
+        return $smsresult;
+    }
+
+    public function consignment_sms($consignment_data){
+        $q = $this->db->get('settings');
+        if ($q->num_rows() > 0) {
+            foreach (($q->result()) as $row) {
+                $data = $row;
+            }
+        }
+//        echo "<pre>";
+//        print_r($data);
+//        echo "</pre>";
+
+        $this->load->library('email');
+
+        $this->email->from("sales@officeklick.org", "OfficeKlick");
+        $this->email->to($consignment_data["supplier_email"]);
+        $this->email->subject("Purchase Information - " . $data->site_name);
+        $this->email->message("Thank You for The Product");
+        $this->email->set_newline("\r\n");
+
+        if (!$this->email->send()) {
+//            echo $this->email->print_debugger();
+            show_error($this->email->print_debugger());
+            return FALSE;
+        } else {
+            return TRUE;
+        }
+    }
+
     /* -------------------------------------------------------------------------------------------------------------------------------- */
 
     public function add($quote_id = null)
@@ -520,6 +617,12 @@ class Purchases extends MY_Controller
         }
 
         if ($this->form_validation->run() == true && $this->purchases_model->addPurchase($data, $products)) {
+            $consignment_data = array(
+                'supplier_email' => $supplier_details->email,
+                'supplier_phone' => $supplier_details->phone,
+            );
+            $this->consignment_sms($consignment_data);
+            $this->send_sms($consignment_data);
             $this->session->set_userdata('remove_pols', 1);
             $this->session->set_flashdata('message', $this->lang->line("purchase_added"));
             admin_redirect('purchases');

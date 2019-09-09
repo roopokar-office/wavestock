@@ -8,135 +8,144 @@
             <button type="button" class="btn btn-xs btn-default no-print pull-right" style="margin-right:15px;" onclick="window.print();">
                 <i class="fa fa-print"></i> <?= lang('print'); ?>
             </button>
+            <br/>
+            <br/>
             <?php if ($logo) { ?>
-                <div class="text-center" style="margin-bottom:20px;">
-                    <img src="<?= base_url() . 'assets/uploads/logos/' . $biller->logo; ?>"
-                         alt="<?= $biller->company != '-' ? $biller->company : $biller->name; ?>">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="text-right" style="margin-bottom:20px;">
+                            <img src="<?= base_url() . 'assets/uploads/logos/' . $Settings->logo; ?>"
+                                 alt="<?= $Settings->site_name; ?>">
+                        </div>
+                    </div>
                 </div>
             <?php } ?>
-            <div class="well well-sm">
-                <div class="row bold">
-                    <div class="col-xs-5">
-                    <p class="bold">
-                        <?= lang("ref"); ?>: <?= $inv->reference_no; ?><br>
-                        <?= lang("date"); ?>: <?= $this->sma->hrld($inv->date); ?><br>
-                        <?= lang("status"); ?>: <?= $inv->status; ?>
-                    </p>
-                    </div>
-                    <div class="col-xs-7 text-right order_barcodes">
-                        <img src="<?= admin_url('misc/barcode/'.$this->sma->base64url_encode($inv->reference_no).'/code128/74/0/1'); ?>" alt="<?= $inv->reference_no; ?>" class="bcimg" />
-                        <?= $this->sma->qrcode('link', urlencode(admin_url('quotes/view/' . $inv->id)), 2); ?>
-                    </div>
-                    <div class="clearfix"></div>
+            <div class="row">
+                <div class="col-xs-12">
+                    <h1 class="text-uppercase">Quotation</h1>
                 </div>
-                <div class="clearfix"></div>
             </div>
+            <style>
+                .bordered-box {
+                    border: 1px solid;
+                    padding: 5px;
+                    min-height: 160px;
+                }
+                .company {
+                    position: fixed;
+                    bottom: 55px;
+                }
+                .buttons {
+                    margin-top: 55px;
+                }
+                @media print {
+                    .table thead tr th {
+                        background-color: #000 !important;
+                        color: #fff !important;
+                        border-top: 1px solid #000 !important;
+                    }
+                    .table-bordered tbody tr td {
+                        border: solid #000 !important;
+                        border-width: 1px 1px 1px 1px !important;
+                    }
+                    .table-bordered th,
+                    .table-bordered td {
+                        border-collapse: unset !important;
+                        border: 1px solid #000 !important;
+                    }
+                    .company {
+                        display: contents;
+                        position: fixed;
+                        height: 100px;
+                        bottom: 0;
+                        width: 100%;
+                        margin-top: 50px;
+                    }
+                }
+            </style>
 
             <div class="row" style="margin-bottom:15px;">
                 <div class="col-xs-6">
-                    <?php echo $this->lang->line("to"); ?>:<br/>
-                    <h2 style="margin-top:10px;"><?= $customer->company && $customer->company != '-' ? $customer->company : $customer->name; ?></h2>
-                    <?= $customer->company && $customer->company != '-' ? "" : "Attn: " . $customer->name ?>
+                    <div class="bordered-box">
+                        <h2 style="margin-top:10px;"><?= $customer->company && $customer->company != '-' ? $customer->company : $customer->name; ?></h2>
+                        <?= $customer->company && $customer->company != '-' ? "" : "Attn: " . $customer->name ?>
+                        <?php
+                        echo $customer->address . "<br>"
+                            . $customer->city . " " . $customer->postal_code . " " . $customer->state . "<br>"
+                            . $customer->country . "<br />"
+                            . $customer->phone . "<br />"
+                            . $customer->email;
 
-                    <?php
-                    echo $customer->address . "<br>" . $customer->city . " " . $customer->postal_code . " " . $customer->state . "<br>" . $customer->country;
+                        echo "<p>";
 
-                    echo "<p>";
+                        if ($customer->vat_no != "-" && $customer->vat_no != "") {
+                            echo "<br>" . lang("vat_no") . ": " . $customer->vat_no;
+                        }
+                        if ($customer->gst_no != "-" && $customer->gst_no != "") {
+                            echo "<br>" . lang("gst_no") . ": " . $customer->gst_no;
+                        }
+                        if ($customer->cf1 != "-" && $customer->cf1 != "") {
+                            echo "<br>" . lang("ccf1") . ": " . $customer->cf1;
+                        }
+                        if ($customer->cf2 != "-" && $customer->cf2 != "") {
+                            echo "<br>" . lang("ccf2") . ": " . $customer->cf2;
+                        }
+                        if ($customer->cf3 != "-" && $customer->cf3 != "") {
+                            echo "<br>" . lang("ccf3") . ": " . $customer->cf3;
+                        }
+                        if ($customer->cf4 != "-" && $customer->cf4 != "") {
+                            echo "<br>" . lang("ccf4") . ": " . $customer->cf4;
+                        }
+                        if ($customer->cf5 != "-" && $customer->cf5 != "") {
+                            echo "<br>" . lang("ccf5") . ": " . $customer->cf5;
+                        }
+                        if ($customer->cf6 != "-" && $customer->cf6 != "") {
+                            echo "<br>" . lang("ccf6") . ": " . $customer->cf6;
+                        }
 
-                    if ($customer->vat_no != "-" && $customer->vat_no != "") {
-                        echo "<br>" . lang("vat_no") . ": " . $customer->vat_no;
-                    }
-                    if ($customer->gst_no != "-" && $customer->gst_no != "") {
-                        echo "<br>" . lang("gst_no") . ": " . $customer->gst_no;
-                    }
-                    if ($customer->cf1 != "-" && $customer->cf1 != "") {
-                        echo "<br>" . lang("ccf1") . ": " . $customer->cf1;
-                    }
-                    if ($customer->cf2 != "-" && $customer->cf2 != "") {
-                        echo "<br>" . lang("ccf2") . ": " . $customer->cf2;
-                    }
-                    if ($customer->cf3 != "-" && $customer->cf3 != "") {
-                        echo "<br>" . lang("ccf3") . ": " . $customer->cf3;
-                    }
-                    if ($customer->cf4 != "-" && $customer->cf4 != "") {
-                        echo "<br>" . lang("ccf4") . ": " . $customer->cf4;
-                    }
-                    if ($customer->cf5 != "-" && $customer->cf5 != "") {
-                        echo "<br>" . lang("ccf5") . ": " . $customer->cf5;
-                    }
-                    if ($customer->cf6 != "-" && $customer->cf6 != "") {
-                        echo "<br>" . lang("ccf6") . ": " . $customer->cf6;
-                    }
-
-                    echo "</p>";
-                    echo lang("tel") . ": " . $customer->phone . "<br>" . lang("email") . ": " . $customer->email;
-                    ?>
+                        echo "</p>";
+                        ?>
+                    </div>
                 </div>
                 <div class="col-xs-6">
-                    <?php echo $this->lang->line("from"); ?>:
-                    <h2 style="margin-top:10px;"><?= $biller->company != '-' ? $biller->company : $biller->name; ?></h2>
-                    <?= $biller->company ? "" : "Attn: " . $biller->name ?>
-
-                    <?php
-                    echo $biller->address . "<br>" . $biller->city . " " . $biller->postal_code . " " . $biller->state . "<br>" . $biller->country;
-
-                    echo "<p>";
-
-                    if ($biller->vat_no != "-" && $biller->vat_no != "") {
-                        echo "<br>" . lang("vat_no") . ": " . $biller->vat_no;
-                    }
-                    if ($biller->gst_no != "-" && $biller->gst_no != "") {
-                        echo "<br>" . lang("gst_no") . ": " . $biller->gst_no;
-                    }
-                    if ($biller->cf1 != "-" && $biller->cf1 != "") {
-                        echo "<br>" . lang("bcf1") . ": " . $biller->cf1;
-                    }
-                    if ($biller->cf2 != "-" && $biller->cf2 != "") {
-                        echo "<br>" . lang("bcf2") . ": " . $biller->cf2;
-                    }
-                    if ($biller->cf3 != "-" && $biller->cf3 != "") {
-                        echo "<br>" . lang("bcf3") . ": " . $biller->cf3;
-                    }
-                    if ($biller->cf4 != "-" && $biller->cf4 != "") {
-                        echo "<br>" . lang("bcf4") . ": " . $biller->cf4;
-                    }
-                    if ($biller->cf5 != "-" && $biller->cf5 != "") {
-                        echo "<br>" . lang("bcf5") . ": " . $biller->cf5;
-                    }
-                    if ($biller->cf6 != "-" && $biller->cf6 != "") {
-                        echo "<br>" . lang("bcf6") . ": " . $biller->cf6;
-                    }
-
-                    echo "</p>";
-                    echo lang("tel") . ": " . $biller->phone . "<br>" . lang("email") . ": " . $biller->email;
-                    ?>
+                    <div class="bordered-box">
+                        <?= lang("Order_Number"); ?>: <?= rand(); ?><br>
+                        <?= lang("Order_Date"); ?>: <?= $this->sma->hrld($inv->date); ?><br>
+                        <?= lang("ref"); ?>: <?= $inv->reference_no; ?><br>
+                        <?php if (!empty($inv->return_purchase_ref)) {
+                            echo lang("return_ref") . ': ' . $inv->return_purchase_ref;
+                            if ($inv->return_id) {
+                                echo ' <a data-target="#myModal2" data-toggle="modal" href="' . admin_url('purchases/modal_view/' . $inv->return_id) . '"><i class="fa fa-external-link no-print"></i></a><br>';
+                            } else {
+                                echo '<br>';
+                            }
+                        } ?>
+                    </div>
                 </div>
             </div>
-
+            <br/>
+            <br/>
             <div class="table-responsive">
                 <table class="table table-bordered table-hover table-striped print-table order-table">
-
                     <thead>
-
-                    <tr>
-                        <th><?= lang("no."); ?></th>
-                        <th><?= lang("description"); ?></th>
-                        <?php if ($Settings->indian_gst) { ?>
-                            <th><?= lang("hsn_code"); ?></th>
-                        <?php } ?>
-                        <th><?= lang("quantity"); ?></th>
-                        <th><?= lang("unit_price"); ?></th>
-                        <?php
-                        if ($Settings->tax1 && $inv->product_tax > 0) {
-                            echo '<th>' . lang("tax") . '</th>';
-                        }
-                        if ($Settings->product_discount && $inv->product_discount != 0) {
-                            echo '<th>' . lang("discount") . '</th>';
-                        }
-                        ?>
-                        <th><?= lang("subtotal"); ?></th>
-                    </tr>
-
+	                    <tr>
+	                        <th><?= lang("no."); ?></th>
+	                        <th><?= lang("description"); ?></th>
+	                        <?php if ($Settings->indian_gst) { ?>
+	                            <th><?= lang("hsn_code"); ?></th>
+	                        <?php } ?>
+	                        <th><?= lang("quantity"); ?></th>
+	                        <th><?= lang("unit_price"); ?></th>
+	                        <?php
+	                        if ($Settings->tax1 && $inv->product_tax > 0) {
+	                            echo '<th>' . lang("tax") . '</th>';
+	                        }
+	                        if ($Settings->product_discount && $inv->product_discount != 0) {
+	                            echo '<th>' . lang("discount") . '</th>';
+	                        }
+	                        ?>
+	                        <th><?= lang("subtotal"); ?></th>
+	                    </tr>
                     </thead>
 
                     <tbody>
@@ -251,27 +260,31 @@
             <div class="row">
                 <div class="col-xs-12">
                     <?php
-                        if ($inv->note || $inv->note != "") { ?>
-                            <div class="well well-sm">
-                                <p class="bold"><?= lang("note"); ?>:</p>
-                                <div><?= $this->sma->decode_html($inv->note); ?></div>
-                            </div>
-                        <?php } ?>
+                    if ($inv->note || $inv->note != "") { ?>
+                        <span class="bold"><?= lang("note"); ?>: </span>
+                        <?= strip_tags($this->sma->decode_html($inv->note)); ?>
+                        <br/>
+                        <br/>
+                        <?php
+                    }
+                    ?>
                 </div>
+            </div>
 
-                <div class="col-xs-5 pull-right">
-                    <div class="well well-sm">
-                        <p>
-                            <?= lang("created_by"); ?>: <?= $created_by->first_name . ' ' . $created_by->last_name; ?> <br>
-                            <?= lang("date"); ?>: <?= $this->sma->hrld($inv->date); ?>
-                        </p>
-                        <?php if ($inv->updated_by) { ?>
-                        <p>
-                            <?= lang("updated_by"); ?>: <?= $updated_by->first_name . ' ' . $updated_by->last_name;; ?><br>
-                            <?= lang("update_at"); ?>: <?= $this->sma->hrld($inv->updated_at); ?>
-                        </p>
-                        <?php } ?>
-                    </div>
+            <div class="row">
+                <div class="col-xs-8">
+                    Checked & received by<br/>
+                    <br/>
+                    Sig.: ……………………………………………<br/>
+                    Name: …………………………………………<br/>
+                    Designation & Seal: …………………………<br/>
+                </div>
+                <div class="col-xs-4 pull-right">
+                    Delivered by<br/>
+                    <br/>
+                    <br/>
+                    ………………………………………<br/>
+                    (Name & Date)<br/>
                 </div>
             </div>
             <?php if (!$Supplier || !$Customer) { ?>
@@ -326,6 +339,10 @@
                     </div>
                 </div>
             <?php } ?>
+            <div class="company company-address">
+                <b>Orogenic Office Solutions Limited</b><br/>
+                S.R Tower (6th floor), Plot # 105, Road # 35, Sector # 7, Uttara C/A, Dhaka-1230 info@officeklick.com | www.officeklick.com
+            </div>
         </div>
     </div>
 </div>
