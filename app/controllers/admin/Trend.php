@@ -211,7 +211,7 @@ ON {$this->db->dbprefix('purchases')}.id = {$this->db->dbprefix('purchase_items'
         } else {
             $this->load->library('datatables');
             $this->datatables
-                ->select("product_id, product_name AS product_name $month_year", FALSE)
+                ->select("product_code, product_name AS product_name $month_year", FALSE)
                 ->from('purchases')
                 ->join($transposed, 'tr.purchase_id=purchases.id', 'right')
                 ->join('warehouses', 'warehouses.id=purchases.warehouse_id', 'left')
