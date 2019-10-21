@@ -888,6 +888,30 @@
                                     </li>
                                 </ul>
                             </li>
+                        <li class="mm_trend">
+                            <a class="dropmenu" href="#">
+                                <i class="fa fa-line-chart"></i>
+                                <span class="text"> <?= lang('Trend_Reports'); ?> </span>
+                                <span class="chevron closed"></span>
+                            </a>
+                            <ul>
+                                <li id="trend_purchases">
+                                    <a href="<?= admin_url('trend/purchases') ?>">
+                                        <i class="fa fa-cloud-download"></i><span class="text"> <?= lang('Purchase_Trend'); ?></span>
+                                    </a>
+                                </li>
+                                <li id="trend_sales">
+                                    <a href="<?= admin_url('trend/sales') ?>">
+                                        <i class="fa fa-sellsy"></i><span class="text"> <?= lang('Sales_Trend'); ?></span>
+                                    </a>
+                                </li>
+                                <li id="trend_purchase_sales">
+                                    <a href="<?= admin_url('trend/purchase_sales') ?>">
+                                        <i class="fa fa-buysellads"></i><span class="text"> <?= lang('Purchase_&_Sales_Trend'); ?></span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
                             <?php if ($Owner && file_exists(APPPATH.'controllers'.DIRECTORY_SEPARATOR.'shop'.DIRECTORY_SEPARATOR.'Shop.php')) { ?>
                             <li class="mm_shop_settings mm_api_settings">
                                 <a class="dropmenu" href="#">
