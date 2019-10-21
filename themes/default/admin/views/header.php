@@ -756,9 +756,19 @@
                                         </a>
                                     </li>
                                     <?php } ?>
+                                    <li id="reports_cogs">
+                                        <a href="<?= admin_url('cogs') ?>">
+                                            <i class="fa fa-bar-chart-o"></i><span class="text"> <?= lang('COGS_Reports'); ?></span>
+                                        </a>
+                                    </li>
                                     <li id="reports_quantity_alerts">
                                         <a href="<?= admin_url('reports/quantity_alerts') ?>">
                                             <i class="fa fa-bar-chart-o"></i><span class="text"> <?= lang('product_quantity_alerts'); ?></span>
+                                        </a>
+                                    </li>
+                                    <li id="reports_remaining_quantity">
+                                        <a href="<?= admin_url('remaining/quantity') ?>">
+                                            <i class="fa fa-bar-chart-o"></i><span class="text"> <?= lang('Reports_Remaining_Quantity'); ?></span>
                                         </a>
                                     </li>
                                     <?php if ($Settings->product_expiry) { ?>
@@ -1168,7 +1178,7 @@
                             </li>
                             <?php } ?>
 
-                            <?php if ($GP['reports-quantity_alerts'] || $GP['reports-expiry_alerts'] || $GP['reports-products'] || $GP['reports-monthly_sales'] || $GP['reports-sales'] || $GP['reports-payments'] || $GP['reports-purchases'] || $GP['reports-customers'] || $GP['reports-suppliers'] || $GP['reports-expenses']) { ?>
+                            <?php if ($GP['reports-quantity_alerts'] || $GP['reports-expiry_alerts'] || $GP['reports-products'] || $GP['reports-monthly_sales'] || $GP['reports-sales'] || $GP['reports-payments'] || $GP['reports-purchases'] || $GP['reports-customers'] || $GP['reports-suppliers'] || $GP['reports-expenses'] || $GP['reports-remaining-qty']) { ?>
                             <li class="mm_reports">
                                 <a class="dropmenu" href="#">
                                     <i class="fa fa-bar-chart-o"></i>
@@ -1182,7 +1192,15 @@
                                             <i class="fa fa-bar-chart-o"></i><span class="text"> <?= lang('product_quantity_alerts'); ?></span>
                                         </a>
                                     </li>
-                                    <?php }
+                                    <?php } ?>
+                                    <?php if ($GP['reports-remaining-qty']) { ?>
+                                    <li id="reports_remaining_quantity">
+                                        <a href="<?= admin_url('remaining/quantity') ?>">
+                                            <i class="fa fa-bar-chart-o"></i><span class="text"> <?= lang('Reports_Remaining_Quantity'); ?></span>
+                                        </a>
+                                    </li>
+                                    <?php } ?>
+                                    <?php
                                     if ($GP['reports-expiry_alerts']) { ?>
                                     <?php if ($Settings->product_expiry) { ?>
                                     <li id="reports_expiry_alerts">
