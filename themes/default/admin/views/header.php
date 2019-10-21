@@ -697,6 +697,11 @@
                                                 <i class="fa fa-th-list"></i><span class="text"> <?= lang('Tags'); ?></span>
                                             </a>
                                         </li>
+                                        <li id="system_settings_kpi">
+                                            <a href="<?= admin_url('kpi') ?>">
+                                                <i class="fa fa-th-list"></i><span class="text"> <?= lang('KPI'); ?></span>
+                                            </a>
+                                        </li>
                                         <li id="system_settings_variants">
                                             <a href="<?= admin_url('system_settings/variants') ?>">
                                                 <i class="fa fa-tags"></i><span class="text"> <?= lang('variants'); ?></span>
@@ -869,6 +874,11 @@
                                     <li id="reports_supplier_report">
                                         <a href="<?= admin_url('reports/suppliers') ?>">
                                             <i class="fa fa-users"></i><span class="text"> <?= lang('suppliers_report'); ?></span>
+                                        </a>
+                                    </li>
+                                    <li id="reports_kpi_report">
+                                        <a href="<?= admin_url('kpireports') ?>">
+                                            <i class="fa fa-users"></i><span class="text"> <?= lang('KPI_Report'); ?></span>
                                         </a>
                                     </li>
                                     <li id="reports_staff_report">
