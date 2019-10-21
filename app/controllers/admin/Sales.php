@@ -56,6 +56,8 @@ class Sales extends MY_Controller
             $warehouse_id = $user->warehouse_id;
         }
         $detail_link = anchor('admin/sales/view/$1', '<i class="fa fa-file-text-o"></i> ' . lang('sale_details'));
+//         $challan_link = anchor('admin/pos/challan_view/$1', '<i class="fa fa-file-text-o"></i> ' . lang('Challan'));
+        $challan_link = anchor('#', '<i class="fa fa-file-text-o"></i> ' . lang('Delivery_Challan'), array('id' => '$1', 'class' => 'challan_link_sales'));
         $duplicate_link = anchor('admin/sales/add?sale_id=$1', '<i class="fa fa-plus-circle"></i> ' . lang('duplicate_sale'));
         $payments_link = anchor('admin/sales/payments/$1', '<i class="fa fa-money"></i> ' . lang('view_payments'), 'data-toggle="modal" data-target="#myModal"');
         $add_payment_link = anchor('admin/sales/add_payment/$1', '<i class="fa fa-money"></i> ' . lang('add_payment'), 'data-toggle="modal" data-target="#myModal"');
@@ -74,6 +76,7 @@ class Sales extends MY_Controller
         . lang('actions') . ' <span class="caret"></span></button>
         <ul class="dropdown-menu pull-right" role="menu">
             <li>' . $detail_link . '</li>
+            <li>' . $challan_link . '</li>
             <li>' . $duplicate_link . '</li>
             <li>' . $payments_link . '</li>
             <li>' . $add_payment_link . '</li>
@@ -179,6 +182,31 @@ class Sales extends MY_Controller
         $this->data['return_rows'] = $inv->return_id ? $this->sales_model->getAllInvoiceItems($inv->return_id) : NULL;
 
         $this->load->view($this->theme . 'sales/modal_view', $this->data);
+    }
+
+    public function challan_modal_view($id = null)
+    {
+        $this->sma->checkPermissions('index', true);
+
+        if ($this->input->get('id')) {
+            $id = $this->input->get('id');
+        }
+        $this->data['error'] = (validation_errors()) ? validation_errors() : $this->session->flashdata('error');
+        $inv = $this->sales_model->getInvoiceByID($id);
+        if (!$this->session->userdata('view_right')) {
+            $this->sma->view_rights($inv->created_by, true);
+        }
+        $this->data['customer'] = $this->site->getCompanyByID($inv->customer_id);
+        $this->data['biller'] = $this->site->getCompanyByID($inv->biller_id);
+        $this->data['created_by'] = $this->site->getUser($inv->created_by);
+        $this->data['updated_by'] = $inv->updated_by ? $this->site->getUser($inv->updated_by) : null;
+        $this->data['warehouse'] = $this->site->getWarehouseByID($inv->warehouse_id);
+        $this->data['inv'] = $inv;
+        $this->data['rows'] = $this->sales_model->getAllInvoiceItems($id);
+        $this->data['return_sale'] = $inv->return_id ? $this->sales_model->getInvoiceByID($inv->return_id) : NULL;
+        $this->data['return_rows'] = $inv->return_id ? $this->sales_model->getAllInvoiceItems($inv->return_id) : NULL;
+
+        $this->load->view($this->theme . 'sales/challan_modal_view', $this->data);
     }
 
     public function view($id = null)

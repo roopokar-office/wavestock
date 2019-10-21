@@ -1067,6 +1067,16 @@ $(document).ready(function() {
         $('#myModal').modal('show');
         //window.location.href = site.base_url + 'purchases/view/' + $(this).parent('.purchase_link').attr('id');
     });
+    $('body').on('click', '.challan_link', function(e) {
+        e.preventDefault();
+        $('#myModal').modal({remote: site.base_url + 'purchases/challan_modal_view/' + $(this).attr('id')});
+        $('#myModal').modal('show');
+    });
+    $('body').on('click', '.challan_link_sales', function(e) {
+        e.preventDefault();
+        $('#myModal').modal({remote: site.base_url + 'sales/challan_modal_view/' + $(this).attr('id')});
+        $('#myModal').modal('show');
+    });
     $('body').on('click', '.purchase_link2 td', function() {
         $('#myModal').modal({remote: site.base_url + 'purchases/modal_view/' + $(this).closest('tr').attr('id')});
         $('#myModal').modal('show');
