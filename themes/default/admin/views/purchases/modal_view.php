@@ -8,6 +8,9 @@
             <button type="button" class="btn btn-xs btn-default no-print pull-right" style="margin-right:15px;" onclick="window.print();">
                 <i class="fa fa-print"></i> <?= lang('print'); ?>
             </button>
+            <button type="button" class="btn btn-xs btn-default no-print pull-right" id="table-export" data-filename="Purchase_Details" style="margin-right:15px;">
+                <i class="fa fa-file-excel-o"></i> <?= lang('excel'); ?>
+            </button>
             <br/>
             <br/>
             <?php if ($logo) { ?>
@@ -125,7 +128,7 @@
             <br/>
             <br/>
             <div class="table-responsive">
-                <table class="table table-bordered table-hover table-striped print-table order-table">
+                <table class="table table-bordered table-hover table-striped print-table order-table" id="tblData">
                     <thead>
                     <tr>
                         <th><?= lang("no."); ?></th>
@@ -415,8 +418,24 @@
         </div>
     </div>
 </div>
+<script type="text/javascript" src="<?= $assets ?>js/xlsx.core.min.js"></script>
+<script type="text/javascript" src="<?= $assets ?>js/FileSaver.min.js"></script>
+<script type="text/javascript" src="<?= $assets ?>js/tableexport.min.js"></script>
 <script type="text/javascript">
     $(document).ready(function () {
         $('.tip').tooltip();
+        var excelButton = $('#table-export');
+        var table = $('#tblData').tableExport({
+            formats: ["xlsx"],
+            filename: excelButton.attr('data-filename'),
+            sheetname: excelButton.attr('data-filename'),
+            exportButtons: false,
+            htmlContent: true,
+        });
+        excelButton.click(function(){
+            var exportData = table.getExportData();
+            var xlsxData = exportData.tblData.xlsx; // Replace with the kind of file you want from the exportData
+            table.export2file(xlsxData.data, xlsxData.mimeType, xlsxData.filename, xlsxData.fileExtension, xlsxData.merges, xlsxData.RTL, xlsxData.sheetname);
+        });
     });
 </script>
