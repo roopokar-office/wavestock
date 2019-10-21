@@ -17,7 +17,7 @@
             'fnRowCallback': function (nRow, aData, iDisplayIndex) {
                 var oSettings = oTable.fnSettings();
                 nRow.id = aData[0];
-                nRow.className = "quote_link";
+                nRow.className = "webquote_link";
                 return nRow;
             },
             "aoColumns": [{"bSortable": false,"mRender": checkbox}, {"mRender": fld}, null, null, null, null, null, {"mRender": currencyFormat},  {"mRender": row_status}, {"bSortable": false,"mRender": attachment}, {"bSortable": false}]
@@ -85,7 +85,7 @@
 <div class="box">
     <div class="box-header">
         <h2 class="blue"><i
-                class="fa-fw fa fa-heart-o"></i><?= lang('Web_Quotes') . ' (' . ($warehouse_id ? $warehouse->name : lang('all_warehouses')) . ')'; ?>
+                class="fa-fw fa fa-heart-o"></i><?= lang('Web_Quotations') . ' (' . ($warehouse_id ? $warehouse->name : lang('all_warehouses')) . ')'; ?>
         </h2>
 
         <div class="box-icon">
@@ -170,7 +170,7 @@
                             <th style="min-width:30px; width: 30px; text-align: center;">
                                 <input class="checkbox checkft" type="checkbox" name="check"/>
                             </th>
-                            <th></th><th></th><th></th><th></th><th></th><th></th><th></th>
+                            <th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th>
                             <th style="min-width:30px; width: 30px; text-align: center;"><i class="fa fa-chain"></i></th>
                             <th style="width:115px; text-align:center;"><?= lang("actions"); ?></th>
                         </tr>

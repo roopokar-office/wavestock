@@ -25,7 +25,7 @@
                     </div>
                     <div class="col-xs-7 text-right order_barcodes">
                         <img src="<?= admin_url('misc/barcode/'.$this->sma->base64url_encode($inv->reference_no).'/code128/74/0/1'); ?>" alt="<?= $inv->reference_no; ?>" class="bcimg" />
-                        <?= $this->sma->qrcode('link', urlencode(admin_url('quotes/view/' . $inv->id)), 2); ?>
+                        <?= $this->sma->qrcode('link', urlencode(admin_url('webquotes/view/' . $inv->id)), 2); ?>
                     </div>
                     <div class="clearfix"></div>
                 </div>
@@ -296,26 +296,26 @@
                             </a>
                         </div>
                         <div class="btn-group">
-                            <a href="<?= admin_url('quotes/email/' . $inv->id) ?>" data-toggle="modal" data-target="#myModal2" class="tip btn btn-primary" title="<?= lang('email') ?>">
+                            <a href="<?= admin_url('webquotes/email/' . $inv->id) ?>" data-toggle="modal" data-target="#myModal2" class="tip btn btn-primary" title="<?= lang('email') ?>">
                                 <i class="fa fa-envelope-o"></i>
                                 <span class="hidden-sm hidden-xs"><?= lang('email') ?></span>
                             </a>
                         </div>
                         <div class="btn-group">
-                            <a href="<?= admin_url('quotes/pdf/' . $inv->id) ?>" class="tip btn btn-primary" title="<?= lang('download_pdf') ?>">
+                            <a href="<?= admin_url('webquotes/pdf/' . $inv->id) ?>" class="tip btn btn-primary" title="<?= lang('download_pdf') ?>">
                                 <i class="fa fa-download"></i>
                                 <span class="hidden-sm hidden-xs"><?= lang('pdf') ?></span>
                             </a>
                         </div>
                         <div class="btn-group">
-                            <a href="<?= admin_url('quotes/edit/' . $inv->id) ?>" class="tip btn btn-warning sledit" title="<?= lang('edit') ?>">
+                            <a href="<?= admin_url('webquotes/edit/' . $inv->id) ?>" class="tip btn btn-warning sledit" title="<?= lang('edit') ?>">
                                 <i class="fa fa-edit"></i>
                                 <span class="hidden-sm hidden-xs"><?= lang('edit') ?></span>
                             </a>
                         </div>
                         <div class="btn-group">
                             <a href="#" class="tip btn btn-danger bpo" title="<b><?= $this->lang->line("delete") ?></b>"
-                                data-content="<div style='width:150px;'><p><?= lang('r_u_sure') ?></p><a class='btn btn-danger' href='<?= admin_url('quotes/delete/' . $inv->id) ?>'><?= lang('i_m_sure') ?></a> <button class='btn bpo-close'><?= lang('no') ?></button></div>"
+                                data-content="<div style='width:150px;'><p><?= lang('r_u_sure') ?></p><a class='btn btn-danger' href='<?= admin_url('webquotes/delete/' . $inv->id) ?>'><?= lang('i_m_sure') ?></a> <button class='btn bpo-close'><?= lang('no') ?></button></div>"
                                 data-html="true" data-placement="top">
                                 <i class="fa fa-trash-o"></i>
                                 <span class="hidden-sm hidden-xs"><?= lang('delete') ?></span>

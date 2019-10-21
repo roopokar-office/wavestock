@@ -2,11 +2,9 @@
 
 // This Controller is created by Ferdous Anam
 
-class WebQuotes extends MY_Controller
-{
+class WebQuotes extends MY_Controller {
 
-    public function __construct()
-    {
+    public function __construct() {
         parent::__construct();
         if (!$this->loggedIn) {
             $this->session->set_userdata('requested_page', $this->uri->uri_string());
@@ -26,8 +24,7 @@ class WebQuotes extends MY_Controller
 
     }
 
-    public function index($warehouse_id = null)
-    {
+    public function index($warehouse_id = null) {
         $this->sma->checkPermissions();
 
         $this->data['error'] = (validation_errors()) ? validation_errors() : $this->session->flashdata('error');
@@ -41,14 +38,13 @@ class WebQuotes extends MY_Controller
             $this->data['warehouse'] = $this->session->userdata('warehouse_id') ? $this->site->getWarehouseByID($this->session->userdata('warehouse_id')) : null;
         }
 
-        $bc = array(array('link' => base_url(), 'page' => lang('home')), array('link' => '#', 'page' => lang('Web Quotes')));
-        $meta = array('page_title' => lang('Web Quotes'), 'bc' => $bc);
+        $bc = array(array('link' => base_url(), 'page' => lang('home')), array('link' => '#', 'page' => lang('Web_Quotations')));
+        $meta = array('page_title' => lang('Web_Quotations'), 'bc' => $bc);
         $this->page_construct('webquotes/index', $meta, $this->data);
 
     }
 
-    public function getQuotes($warehouse_id = null)
-    {
+    public function getQuotes($warehouse_id = null) {
         $this->sma->checkPermissions('index');
 
         if ((!$this->Owner || !$this->Admin) && !$warehouse_id) {
@@ -62,12 +58,12 @@ class WebQuotes extends MY_Controller
         $pc_link = anchor('admin/purchases/add/$1', '<i class="fa fa-star"></i> ' . lang('create_purchase'));
         $pdf_link = anchor('admin/webquotes/pdf/$1', '<i class="fa fa-file-pdf-o"></i> ' . lang('download_pdf'));
         $delete_link = "<a href='#' class='po' title='<b>" . $this->lang->line("delete_quote") . "</b>' data-content=\"<p>"
-        . lang('r_u_sure') . "</p><a class='btn btn-danger po-delete' href='" . admin_url('quotes/delete/$1') . "'>"
-        . lang('i_m_sure') . "</a> <button class='btn po-close'>" . lang('no') . "</button>\"  rel='popover'><i class=\"fa fa-trash-o\"></i> "
-        . lang('delete_quote') . "</a>";
+            . lang('r_u_sure') . "</p><a class='btn btn-danger po-delete' href='" . admin_url('webquotes/delete/$1') . "'>"
+            . lang('i_m_sure') . "</a> <button class='btn po-close'>" . lang('no') . "</button>\"  rel='popover'><i class=\"fa fa-trash-o\"></i> "
+            . lang('delete_quote') . "</a>";
         $action = '<div class="text-center"><div class="btn-group text-left">'
-        . '<button type="button" class="btn btn-default btn-xs btn-primary dropdown-toggle" data-toggle="dropdown">'
-        . lang('actions') . ' <span class="caret"></span></button>
+            . '<button type="button" class="btn btn-default btn-xs btn-primary dropdown-toggle" data-toggle="dropdown">'
+            . lang('actions') . ' <span class="caret"></span></button>
                     <ul class="dropdown-menu pull-right" role="menu">
                         <li>' . $detail_link . '</li>
                         <li>' . $edit_link . '</li>
@@ -81,46 +77,40 @@ class WebQuotes extends MY_Controller
         //$action = '<div class="text-center">' . $detail_link . ' ' . $edit_link . ' ' . $email_link . ' ' . $delete_link . '</div>';
 
         $this->load->library('datatables');
-        /*if ($warehouse_id) {
-            $this->datatables
-                ->select("sma_web_quotes.id AS qid, date, reference_no, GROUP_CONCAT(sma_web_quote_items.product_name SEPARATOR ','), biller, customer, supplier, grand_total, status, attachment")
-                ->from('sma_web_quotes')
-                 ->where('quotes.warehouse_id', $warehouse_id)
-                ->join('sma_web_quote_items','sma_web_quotes.id=sma_web_quote_items.quote_id');
-               
-        } else {
-            $this->datatables
-                ->select("sma_web_quotes.id AS qid, date, reference_no, GROUP_CONCAT(sma_web_quote_items.product_name SEPARATOR ','), biller, customer, supplier, grand_total, status, attachment")
-                ->from('sma_web_quotes')
-                ->join('sma_web_quote_items','sma_web_quotes.id=sma_web_quote_items.quote_id','left');
-              
-        }*/
-
         if ($warehouse_id) {
             $this->datatables
                 ->select("sma_web_quotes.id AS qid, date, reference_no,  GROUP_CONCAT(sma_web_quote_items.product_name SEPARATOR ','), biller, customer, supplier, grand_total, status, attachment")
-                ->from('quotes')
+                ->from('web_quotes')
                 ->where('sma_web_quotes.warehouse_id', $warehouse_id)
-                ->join('sma_web_quote_items','sma_web_quotes.id=sma_web_quote_items.quote_id')
+                ->join('sma_web_quote_items', 'sma_web_quotes.id=sma_web_quote_items.quote_id')
                 ->group_by('sma_web_quote_items.quote_id');
         } else {
             $this->datatables
                 ->select("sma_web_quotes.id AS qid, date, reference_no, GROUP_CONCAT(sma_web_quote_items.product_name SEPARATOR ','), biller, customer, supplier, grand_total, status, attachment")
                 ->from('sma_web_quotes')
-                ->join('sma_web_quote_items','sma_web_quotes.id=sma_web_quote_items.quote_id')
+                ->join('sma_web_quote_items', 'sma_web_quotes.id=sma_web_quote_items.quote_id')
                 ->group_by('sma_web_quote_items.quote_id');
         }
+        /*if ($warehouse_id) {
+            $this->datatables
+                ->select("id, date, reference_no, biller, customer, supplier, grand_total, status, attachment")
+                ->from('web_quotes')
+                ->where('warehouse_id', $warehouse_id);
+        } else {
+            $this->datatables
+                ->select("id, date, reference_no, biller, customer, supplier, grand_total, status, attachment")
+                ->from('web_quotes');
+        }*/
         if (!$this->Customer && !$this->Supplier && !$this->Owner && !$this->Admin && !$this->session->userdata('view_right')) {
             $this->datatables->where('created_by', $this->session->userdata('user_id'));
         } elseif ($this->Customer) {
             $this->datatables->where('customer_id', $this->session->userdata('user_id'));
         }
-        $this->datatables->add_column("Actions", $action, "id");
+        $this->datatables->add_column("Actions", $action, "qid");
         echo $this->datatables->generate();
     }
 
-    public function modal_view($quote_id = null)
-    {
+    public function modal_view($quote_id = null) {
         $this->sma->checkPermissions('index', true);
 
         if ($this->input->get('id')) {
@@ -139,12 +129,11 @@ class WebQuotes extends MY_Controller
         $this->data['warehouse'] = $this->site->getWarehouseByID($inv->warehouse_id);
         $this->data['inv'] = $inv;
 
-        $this->load->view($this->theme . 'quotes/modal_view', $this->data);
+        $this->load->view($this->theme . 'webquotes/modal_view', $this->data);
 
     }
 
-    public function view($quote_id = null)
-    {
+    public function view($quote_id = null) {
         $this->sma->checkPermissions('index');
 
         if ($this->input->get('id')) {
@@ -169,8 +158,7 @@ class WebQuotes extends MY_Controller
 
     }
 
-    public function pdf($quote_id = null, $view = null, $save_bufffer = null)
-    {
+    public function pdf($quote_id = null, $view = null, $save_bufffer = null) {
         $this->sma->checkPermissions();
 
         if ($this->input->get('id')) {
@@ -189,7 +177,7 @@ class WebQuotes extends MY_Controller
         $this->data['inv'] = $inv;
         $name = $this->lang->line("quote") . "_" . str_replace('/', '_', $inv->reference_no) . ".pdf";
         $html = $this->load->view($this->theme . 'quotes/pdf', $this->data, true);
-        if (! $this->Settings->barcode_img) {
+        if (!$this->Settings->barcode_img) {
             $html = preg_replace("'\<\?xml(.*)\?\>'", '', $html);
         }
         if ($view) {
@@ -201,8 +189,7 @@ class WebQuotes extends MY_Controller
         }
     }
 
-    public function combine_pdf($quotes_id)
-    {
+    public function combine_pdf($quotes_id) {
         $this->sma->checkPermissions('pdf');
 
         foreach ($quotes_id as $quote_id) {
@@ -230,8 +217,7 @@ class WebQuotes extends MY_Controller
 
     }
 
-    public function email($quote_id = null)
-    {
+    public function email($quote_id = null) {
         $this->sma->checkPermissions(false, true);
 
         if ($this->input->get('id')) {
@@ -306,7 +292,7 @@ class WebQuotes extends MY_Controller
             $this->data['subject'] = array('name' => 'subject',
                 'id' => 'subject',
                 'type' => 'text',
-                'value' => $this->form_validation->set_value('subject', lang('quote').' (' . $inv->reference_no . ') '.lang('from').' '.$this->Settings->site_name),
+                'value' => $this->form_validation->set_value('subject', lang('quote') . ' (' . $inv->reference_no . ') ' . lang('from') . ' ' . $this->Settings->site_name),
             );
             $this->data['note'] = array('name' => 'note',
                 'id' => 'note',
@@ -322,8 +308,7 @@ class WebQuotes extends MY_Controller
         }
     }
 
-    public function import()
-    {
+    public function import() {
         $this->sma->checkPermissions();
 
         $this->form_validation->set_message('is_natural_no_zero', $this->lang->line("no_zero_required"));
@@ -344,7 +329,7 @@ class WebQuotes extends MY_Controller
             $status = $this->input->post('status');
             $shipping = $this->input->post('shipping') ? $this->input->post('shipping') : 0;
             $customer_details = $this->site->getCompanyByID($customer_id);
-            $customer = $customer_details->company != '-'  ? $customer_details->company : $customer_details->name;
+            $customer = $customer_details->company != '-' ? $customer_details->company : $customer_details->name;
             $biller_details = $this->site->getCompanyByID($biller_id);
             $biller = $biller_details->company != '-' ? $biller_details->company : $biller_details->name;
             if ($supplier_id) {
@@ -514,8 +499,7 @@ class WebQuotes extends MY_Controller
         }
     }
 
-    public function edit($id = null)
-    {
+    public function edit($id = null) {
         $this->sma->checkPermissions();
 
         if ($this->input->get('id')) {
@@ -545,7 +529,7 @@ class WebQuotes extends MY_Controller
             $status = $this->input->post('status');
             $shipping = $this->input->post('shipping') ? $this->input->post('shipping') : 0;
             $customer_details = $this->site->getCompanyByID($customer_id);
-            $customer = $customer_details->company != '-'  ? $customer_details->company : $customer_details->name;
+            $customer = $customer_details->company != '-' ? $customer_details->company : $customer_details->name;
             $biller_details = $this->site->getCompanyByID($biller_id);
             $biller = $biller_details->company != '-' ? $biller_details->company : $biller_details->name;
             if ($supplier_id) {
@@ -699,7 +683,7 @@ class WebQuotes extends MY_Controller
         if ($this->form_validation->run() == true && $this->quotes_model->updateQuote($id, $data, $products)) {
             $this->session->set_userdata('remove_quls', 1);
             $this->session->set_flashdata('message', $this->lang->line("quote_added"));
-            admin_redirect('quotes');
+            admin_redirect('webquotes');
         } else {
 
             $this->data['error'] = (validation_errors() ? validation_errors() : $this->session->flashdata('error'));
@@ -776,14 +760,13 @@ class WebQuotes extends MY_Controller
             $this->data['tax_rates'] = $this->site->getAllTaxRates();
             $this->data['warehouses'] = ($this->Owner || $this->Admin || !$this->session->userdata('warehouse_id')) ? $this->site->getAllWarehouses() : null;
 
-            $bc = array(array('link' => base_url(), 'page' => lang('home')), array('link' => admin_url('quotes'), 'page' => lang('quotes')), array('link' => '#', 'page' => lang('edit_quote')));
-            $meta = array('page_title' => lang('edit_quote'), 'bc' => $bc);
-            $this->page_construct('quotes/edit', $meta, $this->data);
+            $bc = array(array('link' => base_url(), 'page' => lang('home')), array('link' => admin_url('webquotes'), 'page' => lang('quotes')), array('link' => '#', 'page' => lang('Edit_Web_Quotation')));
+            $meta = array('page_title' => lang('Edit_Web_Quotation'), 'bc' => $bc);
+            $this->page_construct('webquotes/edit', $meta, $this->data);
         }
     }
 
-    public function delete($id = null)
-    {
+    public function delete($id = null) {
         $this->sma->checkPermissions(NULL, true);
 
         if ($this->input->get('id')) {
@@ -799,8 +782,7 @@ class WebQuotes extends MY_Controller
         }
     }
 
-    public function suggestions()
-    {
+    public function suggestions() {
         $term = $this->input->get('term', true);
         $warehouse_id = $this->input->get('warehouse_id', true);
         $customer_id = $this->input->get('customer_id', true);
@@ -882,7 +864,7 @@ class WebQuotes extends MY_Controller
                 $units = $this->site->getUnitsByBUID($row->base_unit);
                 $tax_rate = $this->site->getTaxRateByID($row->tax_rate);
 
-                $pr[] = array('id' => sha1($c.$r), 'item_id' => $row->id, 'label' => $row->name . " (" . $row->code . ")", 'category' => $row->category_id,
+                $pr[] = array('id' => sha1($c . $r), 'item_id' => $row->id, 'label' => $row->name . " (" . $row->code . ")", 'category' => $row->category_id,
                     'row' => $row, 'combo_items' => $combo_items, 'tax_rate' => $tax_rate, 'units' => $units, 'options' => $options);
                 $r++;
             }
@@ -892,8 +874,7 @@ class WebQuotes extends MY_Controller
         }
     }
 
-    public function quote_actions()
-    {
+    public function quote_actions() {
         if (!$this->Owner && !$this->GP['bulk_actions']) {
             $this->session->set_flashdata('warning', lang('access_denied'));
             redirect($_SERVER["HTTP_REFERER"]);
@@ -958,8 +939,7 @@ class WebQuotes extends MY_Controller
         }
     }
 
-    public function update_status($id)
-    {
+    public function update_status($id) {
 
         $this->form_validation->set_rules('status', lang("status"), 'required');
 
@@ -978,7 +958,7 @@ class WebQuotes extends MY_Controller
 
             $this->data['inv'] = $this->quotes_model->getQuoteByID($id);
             $this->data['modal_js'] = $this->site->modal_js();
-            $this->load->view($this->theme.'quotes/update_status', $this->data);
+            $this->load->view($this->theme . 'quotes/update_status', $this->data);
 
         }
     }
