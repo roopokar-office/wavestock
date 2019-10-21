@@ -292,6 +292,15 @@
                             </div>
                         </div>
 
+                        <?php if ($Owner || $Admin) { ?>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <?= lang("Due_Date", "poddate"); ?>
+                                    <?php echo form_input('ddate', (isset($_POST['ddate']) ? $_POST['ddate'] : ""), 'class="form-control input-tip datetime" id="poddate" required="required"'); ?>
+                                </div>
+                            </div>
+                        <?php } ?>
+
                         <div class="col-md-12">
                             <div class="panel panel-warning">
                                 <div
