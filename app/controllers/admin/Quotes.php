@@ -986,4 +986,26 @@ class Quotes extends MY_Controller
         }
     }
 
+    public function notes(){
+        $this->sma->checkPermissions();
+        if ($this->input->post('update_notes')) {
+            $notes_for = 'quotes';
+            $note = $this->input->post('note');
+            if ($this->site->updateNotes($notes_for, $note)) {
+                $notes_for = 'web_quotes';
+                if ($this->site->updateNotes($notes_for, $note)) {
+                    $this->session->set_flashdata('message', lang("Notes_Updated"));
+                    admin_redirect('quotes/notes');
+                } else {
+                    $this->data['error'] = $this->session->flashdata('error');
+                }
+            } else {
+                $this->data['error'] = $this->session->flashdata('error');
+            }
+        }
+        $bc = array(array('link' => base_url(), 'page' => lang('home')), array('link' => admin_url('quotes'), 'page' => lang('quotes')), array('link' => '#', 'page' => lang('Quotation_Notes')));
+        $meta = array('page_title' => lang('Quotation_Notes'), 'bc' => $bc);
+        $this->page_construct('quotes/quotes_notes', $meta, $this->data);
+    }
+
 }

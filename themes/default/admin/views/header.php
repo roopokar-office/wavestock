@@ -480,6 +480,12 @@
                                             <span class="text"> <?= lang('List_Website_Quotations'); ?></span>
                                         </a>
                                     </li>
+                                    <li id="quotes_notes">
+                                        <a class="submenu" href="<?= admin_url('quotes/notes'); ?>">
+                                            <i class="fa fa-sticky-note"></i>
+                                            <span class="text"> <?= lang('Quotation_Notes'); ?></span>
+                                        </a>
+                                    </li>
                                 </ul>
                             </li>
 
