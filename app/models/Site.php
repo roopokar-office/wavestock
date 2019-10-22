@@ -1210,4 +1210,15 @@ class Site extends CI_Model
         return false;
     }
 
+    public function updateNotes($notes_for = '', $note = ''){
+        if ($notes_for == '') return false;
+        $data = array(
+            'notes_description' => $note
+        );
+        if ($this->db->update("notes", $data, array('notes_for' => $notes_for))) {
+            return true;
+        }
+        return false;
+    }
+
 }

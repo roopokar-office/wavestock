@@ -438,6 +438,12 @@
                                             <span class="text"> <?= lang('list_gift_cards'); ?></span>
                                         </a>
                                     </li>
+                                    <li id="sales_notes">
+                                        <a class="submenu" href="<?= admin_url('sales/notes'); ?>">
+                                            <i class="fa fa-sticky-note"></i>
+                                            <span class="text"> <?= lang('Sales_Notes'); ?></span>
+                                        </a>
+                                    </li>
                                 </ul>
                             </li>
 

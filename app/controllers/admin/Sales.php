@@ -2743,4 +2743,21 @@ class Sales extends MY_Controller
 
     }
 
+    public function notes(){
+        $this->sma->checkPermissions();
+        if ($this->input->post('update_notes')) {
+            $notes_for = 'sales';
+            $note = $this->input->post('note');
+            if ($this->site->updateNotes($notes_for, $note)) {
+                $this->session->set_flashdata('message', lang("Notes_Updated"));
+                admin_redirect('sales/notes');
+            } else {
+                $this->data['error'] = $this->session->flashdata('error');
+            }
+        }
+        $bc = array(array('link' => base_url(), 'page' => lang('home')), array('link' => admin_url('sales'), 'page' => lang('sales')), array('link' => '#', 'page' => lang('Sales_Notes')));
+        $meta = array('page_title' => lang('Sales_Notes'), 'bc' => $bc);
+        $this->page_construct('sales/sale_notes', $meta, $this->data);
+    }
+
 }
