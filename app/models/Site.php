@@ -1201,4 +1201,13 @@ class Site extends CI_Model
         return FALSE;
     }
 
+    public function getNotes($notes_for = ''){
+        if ($notes_for == '') return false;
+        $q = $this->db->where('notes_for', $notes_for)->get('notes');
+        if ($q->num_rows() > 0) {
+            return $q->first_row();
+        }
+        return false;
+    }
+
 }

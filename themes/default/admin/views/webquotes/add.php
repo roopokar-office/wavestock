@@ -340,7 +340,7 @@
                                 <div class="col-sm-12">
                                     <div class="form-group">
                                         <?= lang("note", "qunote"); ?>
-                                        <?php echo form_textarea('note', (isset($_POST['note']) ? $_POST['note'] : ""), 'class="form-control" id="qunote" style="margin-top: 10px; height: 100px;"'); ?>
+                                        <?php echo form_textarea('note', (isset($_POST['note']) ? $_POST['note'] : $this->site->getNotes('web_quotes')->notes_description), 'class="form-control" id="qunote" style="margin-top: 10px; height: 100px;"'); ?>
                                     </div>
                                 </div>
                             </div>

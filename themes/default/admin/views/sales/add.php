@@ -594,7 +594,7 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <?= lang("sale_note", "slnote"); ?>
-                                        <?php echo form_textarea('note', (isset($_POST['note']) ? $_POST['note'] : ""), 'class="form-control" id="slnote" style="margin-top: 10px; height: 100px;"'); ?>
+                                        <?php echo form_textarea('note', (isset($_POST['note']) ? $_POST['note'] : $this->site->getNotes('sales')->notes_description), 'class="form-control" id="slnote" style="margin-top: 10px; height: 100px;"'); ?>
 
                                     </div>
                                 </div>
