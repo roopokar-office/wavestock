@@ -2222,4 +2222,21 @@ class Purchases extends MY_Controller
         }
     }
 
+    public function notes(){
+        $this->sma->checkPermissions();
+        if ($this->input->post('update_notes')) {
+            $notes_for = 'purchases';
+            $note = $this->input->post('note');
+            if ($this->site->updateNotes($notes_for, $note)) {
+                $this->session->set_flashdata('message', lang("Notes_Updated"));
+                admin_redirect('purchases/notes');
+            } else {
+                $this->data['error'] = $this->session->flashdata('error');
+            }
+        }
+        $bc = array(array('link' => base_url(), 'page' => lang('home')), array('link' => admin_url('purchases'), 'page' => lang('purchases')), array('link' => '#', 'page' => lang('Purchases_Notes')));
+        $meta = array('page_title' => lang('Purchases_Notes'), 'bc' => $bc);
+        $this->page_construct('purchases/purchase_notes', $meta, $this->data);
+    }
+
 }

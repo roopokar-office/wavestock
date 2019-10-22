@@ -520,6 +520,12 @@
                                             <span class="text"> <?= lang('add_expense'); ?></span>
                                         </a>
                                     </li>
+                                    <li id="purchases_notes">
+                                        <a class="submenu" href="<?= admin_url('purchases/notes'); ?>">
+                                            <i class="fa fa-sticky-note"></i>
+                                            <span class="text"> <?= lang('Purchases_Notes'); ?></span>
+                                        </a>
+                                    </li>
                                 </ul>
                             </li>
 
