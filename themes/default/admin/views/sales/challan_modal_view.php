@@ -203,14 +203,12 @@
 
             <div class="row">
                 <div class="col-xs-12">
+                    <span class="bold"><?= lang("note"); ?>: </span>
+                    <?= strip_tags($this->sma->decode_html($this->site->getNotes('challan')->notes_description)); ?>
+                    <br/>
+                    <br/>
+
                     <?php
-                    if ($inv->note || $inv->note != "") { ?>
-                        <span class="bold"><?= lang("note"); ?>: </span>
-                        <?= strip_tags($this->sma->decode_html($inv->note)); ?>
-                        <br/>
-                        <br/>
-                        <?php
-                    }
                     if ($inv->staff_note || $inv->staff_note != "") { ?>
                         <div class="well well-sm staff_note">
                             <span class="bold"><?= lang("staff_note"); ?>:</span>
