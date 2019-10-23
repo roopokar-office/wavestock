@@ -446,7 +446,7 @@
                             <div class="clearfix"></div>
                             <div class="form-group">
                                 <?= lang("note", "ponote"); ?>
-                                <?php echo form_textarea('note', (isset($_POST['note']) ? $_POST['note'] : $this->site->getNotes('purchase')->notes_description), 'class="form-control" id="ponote" style="margin-top: 10px; height: 100px;"'); ?>
+                                <?php echo form_textarea('note', (isset($_POST['note']) ? $_POST['note'] : $this->site->getNotes('purchases')->notes_description), 'class="form-control" id="ponote" style="margin-top: 10px; height: 100px;"'); ?>
                             </div>
 
                         </div>
