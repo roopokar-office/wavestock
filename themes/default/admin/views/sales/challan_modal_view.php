@@ -204,7 +204,7 @@
             <div class="row">
                 <div class="col-xs-12">
                     <span class="bold"><?= lang("note"); ?>: </span>
-                    <?= strip_tags($this->sma->decode_html($this->site->getNotes('challan')->notes_description)); ?>
+                    <?= $this->sma->decode_html($this->site->getNotes('challan')->notes_description); ?>
                     <br/>
                     <br/>
 

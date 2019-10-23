@@ -340,7 +340,7 @@
                     <?php
                     if ($inv->note || $inv->note != "") { ?>
                             <span class="bold"><?= lang("note"); ?>: </span>
-                        <?= strip_tags($this->sma->decode_html($inv->note)); ?>
+                        <?= $this->sma->decode_html($inv->note); ?>
                         <br/>
                         <br/>
                         <?php
