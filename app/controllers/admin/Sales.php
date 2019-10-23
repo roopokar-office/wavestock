@@ -2760,4 +2760,21 @@ class Sales extends MY_Controller
         $this->page_construct('sales/sale_notes', $meta, $this->data);
     }
 
+    public function challan_notes(){
+        $this->sma->checkPermissions();
+        if ($this->input->post('update_notes')) {
+            $notes_for = 'challan';
+            $note = $this->input->post('note');
+            if ($this->site->updateNotes($notes_for, $note)) {
+                $this->session->set_flashdata('message', lang("Notes_Updated"));
+                admin_redirect('sales/challan_notes');
+            } else {
+                $this->data['error'] = $this->session->flashdata('error');
+            }
+        }
+        $bc = array(array('link' => base_url(), 'page' => lang('home')), array('link' => admin_url('sales'), 'page' => lang('sales')), array('link' => '#', 'page' => lang('Challan_Notes')));
+        $meta = array('page_title' => lang('Challan_Notes'), 'bc' => $bc);
+        $this->page_construct('sales/challan_notes', $meta, $this->data);
+    }
+
 }

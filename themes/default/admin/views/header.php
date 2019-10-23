@@ -444,6 +444,12 @@
                                             <span class="text"> <?= lang('Sales_Notes'); ?></span>
                                         </a>
                                     </li>
+                                    <li id="sales_challan_notes">
+                                        <a class="submenu" href="<?= admin_url('sales/challan_notes'); ?>">
+                                            <i class="fa fa-sticky-note"></i>
+                                            <span class="text"> <?= lang('Challan_Notes'); ?></span>
+                                        </a>
+                                    </li>
                                 </ul>
                             </li>
 
