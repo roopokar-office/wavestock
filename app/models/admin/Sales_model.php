@@ -875,4 +875,12 @@ class Sales_model extends CI_Model
         $this->site->syncQuantity(null, null, null, $product_id);
     }
 
+    public function addUpdateLog($data){
+        if ($this->db->insert('sales_edit_payment_log', $data)){
+            return true;
+        } else {
+            return false;
+        }
+    }
+
 }

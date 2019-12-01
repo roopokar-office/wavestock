@@ -2001,7 +2001,7 @@ class Sales extends MY_Controller
                 $payment['attachment'] = $photo;
             }
 
-            //$this->sma->print_arrays($payment);
+            // $this->sma->print_arrays($payment);
 
         } elseif ($this->input->post('edit_payment')) {
             $this->session->set_flashdata('error', validation_errors());
@@ -2009,6 +2009,15 @@ class Sales extends MY_Controller
         }
 
         if ($this->form_validation->run() == true && $this->sales_model->updatePayment($id, $payment, $customer_id)) {
+            $updateLogData = array(
+                'date' => $payment['date'],
+                'sale_id' => $payment['sale_id'],
+                'reference_no' => $payment['reference_no'],
+                'created_by' => $payment['created_by'],
+                'amount' => $payment['amount'],
+                'paid_by' => $payment['paid_by'],
+            );
+            $this->sales_model->addUpdateLog($updateLogData);
             $this->session->set_flashdata('message', lang("payment_updated"));
             admin_redirect("sales");
         } else {
