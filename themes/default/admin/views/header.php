@@ -366,6 +366,12 @@
                                             <span class="text"> <?= lang('print_barcode_label'); ?></span>
                                         </a>
                                     </li>
+                                    <li id="products_print_barcodes_warehouse">
+                                        <a class="submenu" href="<?= admin_url('products/print_barcodes_warehouse'); ?>">
+                                            <i class="fa fa-tags"></i>
+                                            <span class="text"> <?= lang('Print_Barcode_by_Warehouse'); ?></span>
+                                        </a>
+                                    </li>
                                     <li id="products_quantity_adjustments">
                                         <a class="submenu" href="<?= admin_url('products/quantity_adjustments'); ?>">
                                             <i class="fa fa-filter"></i>

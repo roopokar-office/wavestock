@@ -2637,4 +2637,182 @@ class Products extends MY_Controller
 
     }
 
+    function print_barcodes_warehouse($warehouse_id = null)
+    {
+        $this->sma->checkPermissions('barcode', true);
+
+        $this->form_validation->set_rules('style', lang("style"), 'required');
+
+        $this->data['error'] = (validation_errors()) ? validation_errors() : $this->session->flashdata('error');
+        if ($this->Owner || $this->Admin || !$this->session->userdata('warehouse_id')) {
+            $this->data['warehouses'] = $this->site->getAllWarehouses();
+            $this->data['warehouse_id'] = $warehouse_id;
+            $this->data['warehouse'] = $warehouse_id ? $this->site->getWarehouseByID($warehouse_id) : null;
+        } else {
+            $this->data['warehouses'] = null;
+            $this->data['warehouse_id'] = $this->session->userdata('warehouse_id');
+            $this->data['warehouse'] = $this->session->userdata('warehouse_id') ? $this->site->getWarehouseByID($this->session->userdata('warehouse_id')) : null;
+        }
+
+        if ($this->form_validation->run() == true) {
+
+            $style = $this->input->post('style');
+            $bci_size = ($style == 10 || $style == 12 ? 50 : ($style == 14 || $style == 18 ? 30 : 20));
+            $currencies = $this->site->getAllCurrencies();
+            $product_purchase = "( SELECT product_id, product_name, quantity, SUM(quantity) AS total_purchase_qty, SUM(real_unit_cost*quantity) AS total_cost FROM {$this->db->dbprefix('purchase_items')} pi
+            LEFT JOIN {$this->db->dbprefix('purchases')} p on p.id = pi.purchase_id
+            WHERE p.status != 'pending' AND p.status != 'ordered' AND transfer_id IS NULL ";
+            $product_sale = "( SELECT product_id, product_name, SUM(quantity) AS total_sale_qty, `date` 
+             FROM {$this->db->dbprefix('sales')} s JOIN {$this->db->dbprefix('sale_items')} si 
+             ON s.id = si.sale_id ";
+            if ($warehouse_id){
+                $product_purchase .= " AND p.warehouse_id = $warehouse_id";
+                $product_sale .= "WHERE s.warehouse_id = $warehouse_id ";
+            }
+            $product_purchase .= " GROUP BY pi.product_id ) PPurchase";
+            $product_sale .= " GROUP BY si.product_id ) PSales";
+            $this->db
+                ->select("{$this->db->dbprefix('products')}.id, {$this->db->dbprefix('products')}.name,
+                (SUM(total_cost)/SUM(PPurchase.quantity)) AS avg_cost,
+                COALESCE(SUM(PPurchase.quantity), 0) AS total_purchase_qty,
+                IFNULL(total_sale_qty, 0) AS total_sale_qty,
+                (IFNULL(SUM(PPurchase.quantity), 0)-IFNULL(total_sale_qty, 0)) AS remaining_qty", FALSE)
+                ->from('products');
+
+            $this->db
+                ->join($product_sale, 'products.id = PSales.product_id', 'left')
+                ->join($product_purchase, 'products.id = PPurchase.product_id', 'left')
+                ->group_by('products.code');
+
+            $q = $this->db->get();
+            if ($q->num_rows() > 0) {
+                $data = $q->result();
+                foreach ($data as $key => $prod) {
+                    if ($prod->remaining_qty > 0) {
+                        $pid = $prod->id;
+                        $quantity = $prod->remaining_qty;
+                        $product = $this->products_model->getProductWithCategory($pid);
+                        $product->price = $this->input->post('check_promo') ? ($product->promotion ? $product->promo_price : $product->price) : $product->price;
+                        if ($variants = $this->products_model->getProductOptions($pid)) {
+                            foreach ($variants as $option) {
+                                if ($this->input->post('vt_' . $product->id . '_' . $option->id)) {
+                                    $barcodes[] = array(
+                                        'site' => $this->input->post('site_name') ? $this->Settings->site_name : FALSE,
+                                        'name' => $this->input->post('product_name') ? $product->name . ' - ' . $option->name : FALSE,
+                                        'image' => $this->input->post('product_image') ? $product->image : FALSE,
+                                        'barcode' => $product->code . $this->Settings->barcode_separator . $option->id,
+                                        'bcs' => 'code128',
+                                        'bcis' => $bci_size,
+                                        // 'barcode' => $this->product_barcode($product->code . $this->Settings->barcode_separator . $option->id, 'code128', $bci_size),
+                                        'price' => $this->input->post('price') ? $this->sma->formatMoney($option->price != 0 ? ($product->price + $option->price) : $product->price, 'none') : FALSE,
+                                        'rprice' => $this->input->post('price') ? ($option->price != 0 ? ($product->price + $option->price) : $product->price) : FALSE,
+                                        'unit' => $this->input->post('unit') ? $product->unit : FALSE,
+                                        'category' => $this->input->post('category') ? $product->category : FALSE,
+                                        'currencies' => $this->input->post('currencies'),
+                                        'variants' => $this->input->post('variants') ? $variants : FALSE,
+                                        'quantity' => $quantity
+                                    );
+                                }
+                            }
+                        } else {
+                            $barcodes[] = array(
+                                'site' => $this->input->post('site_name') ? $this->Settings->site_name : FALSE,
+                                'name' => $this->input->post('product_name') ? $product->name : FALSE,
+                                'image' => $this->input->post('product_image') ? $product->image : FALSE,
+                                // 'barcode' => $this->product_barcode($product->code, $product->barcode_symbology, $bci_size),
+                                'barcode' => $product->code,
+                                'bcs' => $product->barcode_symbology,
+                                'bcis' => $bci_size,
+                                'price' => $this->input->post('price') ? $this->sma->formatMoney($product->price, 'none') : FALSE,
+                                'rprice' => $this->input->post('price') ? $product->price : FALSE,
+                                'unit' => $this->input->post('unit') ? $product->unit : FALSE,
+                                'category' => $this->input->post('category') ? $product->category : FALSE,
+                                'currencies' => $this->input->post('currencies'),
+                                'variants' => FALSE,
+                                'quantity' => $quantity
+                            );
+                        }
+                        $this->data['barcodes'] = $barcodes;
+                    }
+                }
+
+            }
+            $this->data['currencies'] = $currencies;
+            $this->data['style'] = $style;
+            $this->data['items'] = false;
+            $bc = array(array('link' => base_url(), 'page' => lang('home')), array('link' => admin_url('products'), 'page' => lang('products')), array('link' => '#', 'page' => lang('print_barcodes')));
+            $meta = array('page_title' => lang('print_barcodes'), 'bc' => $bc);
+            $this->page_construct('products/print_barcodes_warehouse', $meta, $this->data);
+
+        } else {
+
+            if ($this->input->get('purchase') || $this->input->get('transfer')) {
+                if ($this->input->get('purchase')) {
+                    $purchase_id = $this->input->get('purchase', TRUE);
+                    $items = $this->products_model->getPurchaseItems($purchase_id);
+                } elseif ($this->input->get('transfer')) {
+                    $transfer_id = $this->input->get('transfer', TRUE);
+                    $items = $this->products_model->getTransferItems($transfer_id);
+                }
+                if ($items) {
+                    foreach ($items as $item) {
+                        if ($row = $this->products_model->getProductByID($item->product_id)) {
+                            $selected_variants = false;
+                            if ($variants = $this->products_model->getProductOptions($row->id)) {
+                                foreach ($variants as $variant) {
+                                    $selected_variants[$variant->id] = isset($pr[$row->id]['selected_variants'][$variant->id]) && !empty($pr[$row->id]['selected_variants'][$variant->id]) ? 1 : ($variant->id == $item->option_id ? 1 : 0);
+                                }
+                            }
+                            $pr[$row->id] = array('id' => $row->id, 'label' => $row->name . " (" . $row->code . ")", 'code' => $row->code, 'name' => $row->name, 'price' => $row->price, 'qty' => $item->quantity, 'variants' => $variants, 'selected_variants' => $selected_variants);
+                        }
+                    }
+                    $this->data['message'] = lang('products_added_to_list');
+                }
+            }
+
+            if ($this->input->get('category')) {
+                if ($products = $this->products_model->getCategoryProducts($this->input->get('category'))) {
+                    foreach ($products as $row) {
+                        $selected_variants = false;
+                        if ($variants = $this->products_model->getProductOptions($row->id)) {
+                            foreach ($variants as $variant) {
+                                $selected_variants[$variant->id] = $variant->quantity > 0 ? 1 : 0;
+                            }
+                        }
+                        $pr[$row->id] = array('id' => $row->id, 'label' => $row->name . " (" . $row->code . ")", 'code' => $row->code, 'name' => $row->name, 'price' => $row->price, 'qty' => $row->quantity, 'variants' => $variants, 'selected_variants' => $selected_variants);
+                    }
+                    $this->data['message'] = lang('products_added_to_list');
+                } else {
+                    $pr = array();
+                    $this->session->set_flashdata('error', lang('no_product_found'));
+                }
+            }
+
+            if ($this->input->get('subcategory')) {
+                if ($products = $this->products_model->getSubCategoryProducts($this->input->get('subcategory'))) {
+                    foreach ($products as $row) {
+                        $selected_variants = false;
+                        if ($variants = $this->products_model->getProductOptions($row->id)) {
+                            foreach ($variants as $variant) {
+                                $selected_variants[$variant->id] = $variant->quantity > 0 ? 1 : 0;
+                            }
+                        }
+                        $pr[$row->id] = array('id' => $row->id, 'label' => $row->name . " (" . $row->code . ")", 'code' => $row->code, 'name' => $row->name, 'price' => $row->price, 'qty' => $row->quantity, 'variants' => $variants, 'selected_variants' => $selected_variants);
+                    }
+                    $this->data['message'] = lang('products_added_to_list');
+                } else {
+                    $pr = array();
+                    $this->session->set_flashdata('error', lang('no_product_found'));
+                }
+            }
+
+            $this->data['items'] = isset($pr) ? json_encode($pr) : false;
+            $this->data['error'] = (validation_errors() ? validation_errors() : $this->session->flashdata('error'));
+            $bc = array(array('link' => base_url(), 'page' => lang('home')), array('link' => admin_url('products'), 'page' => lang('products')), array('link' => '#', 'page' => lang('print_barcodes')));
+            $meta = array('page_title' => lang('print_barcodes'), 'bc' => $bc);
+            $this->page_construct('products/print_barcodes_warehouse', $meta, $this->data);
+
+        }
+    }
+
 }
