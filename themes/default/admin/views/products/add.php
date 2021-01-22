@@ -437,12 +437,12 @@ if (!empty($variants)) {
 
                     <?= lang("Tags", "Tags") ?>
                     <div class="form-group">
-                        <?php foreach ($tags as $tag): ?>
-                    
+                        <?php if ($tags): foreach ($tags as $tag): ?>
+
                         <input name="tags[]" type="checkbox" class="checkbox" id="tags-<?=$tag->id?>" value="<?=$tag->id?>" <?= isset($_POST['tags']) ? 'checked="checked"' : '' ?>/>
                         <label for="tags-<?=$tag->id?>" class="padding05"><?= lang("$tag->name") ?></label>
                     
-                    <?php endforeach; ?></div>
+                    <?php endforeach; endif; ?></div>
 
                 </div>
 
