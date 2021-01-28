@@ -2119,7 +2119,7 @@ class Sales extends MY_Controller
                         $row->price = $pr_group_price->price;
                     }
                 }
-                $row->price = $row->price + (($row->price * $customer_group->percent) / 100);
+                $row->price = $row->price + (($row->price * isset($customer_group->percent) ? $customer_group->percent : 0) / 100);
                 $row->real_unit_price = $row->price;
                 $row->base_quantity = 1;
                 $row->base_unit = $row->unit;
